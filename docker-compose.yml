@@ -1,0 +1,51 @@
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=smartbuy
+      - JWT_SECRET=smartbuy
+    depends_on:
+      - postgres
+    networks:
+      - smartbuy-network
+
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"  # Assuming frontend runs on 3000 (e.g., React default)
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - smartbuy-network
+
+  postgres:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=smartbuy
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./backend/storage/postgres/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./backend/storage/postgres/data.sql:/docker-entrypoint-initdb.d/02-data.sql
+    networks:
+      - smartbuy-network
+
+networks:
+  smartbuy-network:
+    driver: bridge
+
+volumes:
+  pgdata:
