@@ -76,17 +76,17 @@ GET "http://localhost:8081/api/v1/smartphones/1"
 ```json
 {
     "id": 1,
-    "model": "iPhone 16", // название (модель)
-    "producer": "Apple",  // производитель
-    "memory": 128,        // размер внутренней памяти в Гб
-    "ram": 8,             // размер оперативной памяти в Гб
-    "display_size": 6.1,  // размер дисплея
-    "price": 93799,       // цена в рублях (всегда целое число)
-    "ratings_sum": 13,    // сумма всех оценок пользователей
-    "ratings_count": 3,   // количество оценок пользователей
+    "model": "iPhone 16",
+    "producer": "Apple",
+    "memory": 128,
+    "ram": 8,
+    "display_size": 6.1,
+    "price": 93799,
+    "ratings_sum": 13,
+    "ratings_count": 3,
     "image_path": "ссылка на изображение",
     "description": "описание",
-    "reviews": [          // только в запросе индивидуального смартфона
+    "reviews": [
       {                  
         "id": 1,
         "smartphone_id": 1,
@@ -109,7 +109,7 @@ GET "http://localhost:8081/api/v1/smartphones/1"
 ```
 В запросах нескольких смартфонов ```api/v1/smartphones``` поле ```reviews``` будет полностью отсутствовать
 ### Регистрации нового пользователя:
-```json
+```
 POST "http://localhost:8081/api/v1/signup"
 Content-Type: application/json
 
@@ -119,7 +119,7 @@ Content-Type: application/json
 }
 ```
 ### Логин:
-```json
+```
 POST "http://localhost:8081/api/v1/login"
 Content-Type: application/json
 
@@ -193,7 +193,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iL
   "id": 10,
   "created_at": "2025-03-21T15:13:54.800657Z",
   "updated_at": "2025-03-21T15:13:54.800657Z",
-  "items": [ // только в запросе индивидуальной корзины по айди или пользователю
+  "items": [
     {
       "id": 3,
       "smartphone_id": 1,
@@ -244,7 +244,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3Mi
 ]
 ```
 ### Добавить предмет в корзину по айди корзины:
-```json
+```
 POST "http://localhost:8081/api/v1/carts/{cart_id}/items"
 Authorization: {token}
 
@@ -254,7 +254,7 @@ Authorization: {token}
 ```
 ```quantity``` будет равно единице
 ### Изменить количество предмета в корзине:
-```json
+```
 PATCH "http://localhost:8081/api/v1/carts/{cart_id}/items/{item_id}"
 Authorization: {token}
 
@@ -263,7 +263,7 @@ Authorization: {token}
 }
 ```
 Пример:
-```json
+```
 PATCH "http://localhost:8081/api/v1/carts/1/items/1"
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NDI2Njk2NzUsImlhdCI6MTc0MjU4MzI3NX0.vUuOxfPBbsD30xg5bQdsNC4Dti2UTkPA06icmGvnKNk
 
@@ -289,10 +289,10 @@ GET http://localhost:8081/api/v1/smartphones/1/reviews
 [
   {
     "id": 1,
-    "smartphone_id": 1,             // айди смартфона к которому написан отзыв
-    "user_id": 2,                   // айди пользователя отзыва
-    "rating": 5,                    // оценка
-    "comment": "Шикарный смартфон", // опциональный комментарий
+    "smartphone_id": 1,
+    "user_id": 2,
+    "rating": 5,
+    "comment": "Шикарный смартфон",
     "created_at": "2025-03-21T15:15:33.724777Z",
     "updated_at": "2025-03-21T15:15:33.724777Z"
   },
@@ -309,7 +309,7 @@ GET http://localhost:8081/api/v1/smartphones/1/reviews
 Поле ```comment``` может отсутствовать
 
 ### Добавить отзыв к смартфону:
-```json
+```
 POST "http://localhost:8081/api/v1/smartphones/{smartphone_id}/reviews"
 Authorization: {token}
 
@@ -319,7 +319,7 @@ Authorization: {token}
 }
 ```
 Примеры:
-```json
+```
 POST "http://localhost:8081/api/v1/smartphones/1/reviews"
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NDI2Njk2NzUsImlhdCI6MTc0MjU4MzI3NX0.vUuOxfPBbsD30xg5bQdsNC4Dti2UTkPA06icmGvnKNk
 
@@ -328,7 +328,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3Mi
     "comment": "замечательный смартфон"
 }
 ```
-```json
+```
 POST "http://localhost:8081/api/v1/smartphones/1/reviews"
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NDI2Njk2NzUsImlhdCI6MTc0MjU4MzI3NX0.vUuOxfPBbsD30xg5bQdsNC4Dti2UTkPA06icmGvnKNk
 
@@ -337,7 +337,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3Mi
 }
 ```
 ### Изменить отзыв:
-```json
+```
 PATCH "http://localhost:8081/api/v1/smartphones/{smartphone_id}/reviews/{review_id}"
 Authorization: {token}
 
@@ -347,7 +347,7 @@ Authorization: {token}
 }
 ```
 Примеры:
-```json
+```
 PATCH "http://localhost:8081/api/v1/smartphones/1/reviews/5"
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NDI2Njk2NzUsImlhdCI6MTc0MjU4MzI3NX0.vUuOxfPBbsD30xg5bQdsNC4Dti2UTkPA06icmGvnKNk
 
@@ -356,7 +356,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3Mi
     "comment": "сломался через 2 дня"
 }
 ```
-```json
+```
 PATCH "http://localhost:8081/api/v1/smartphones/1/reviews/5"
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NDI2Njk2NzUsImlhdCI6MTc0MjU4MzI3NX0.vUuOxfPBbsD30xg5bQdsNC4Dti2UTkPA06icmGvnKNk
 
