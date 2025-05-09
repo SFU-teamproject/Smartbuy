@@ -1,6 +1,7 @@
 package app
 
 import (
+	
 	"fmt"
 	"net/http"
 	"strconv"
@@ -52,4 +53,5 @@ func (app *App) GetSmartphones(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	app.Encode(w, r, sm)
+	
 }

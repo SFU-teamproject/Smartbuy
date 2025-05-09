@@ -29,5 +29,9 @@ func (app *App) NewRouter() http.Handler {
 	router.HandleFunc("PATCH /api/v1/carts/{cart_id}/items/{item_id}", app.Auth(app.SetQuantity))
 	router.HandleFunc("DELETE /api/v1/carts/{cart_id}/items/{item_id}", app.Auth(app.DeleteFromCart))
 
-	return app.RecoverPanic(app.LogRequests(router))
+	return app.enableCORS(
+		app.RecoverPanic(
+			app.LogRequests(router),
+		),
+	)
 }
