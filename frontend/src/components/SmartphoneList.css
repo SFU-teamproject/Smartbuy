@@ -68,3 +68,12 @@
   .error {
     color: #d00;
   }
+  .product-link {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  .product-link:hover h3 {
+    color: #0066cc;
+    text-decoration: underline;
+  }

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { getSmartphones } from '../api/client';
 import { Smartphone } from '../types';
 import './SmartphoneList.css'; 
+import { Link } from 'react-router-dom';
 
 
 export function SmartphoneList() {
@@ -42,8 +43,11 @@ export function SmartphoneList() {
               alt={phone.model}
               className="product-image"
             />
-            <div className="product-info">
+           <div className="product-info">
+            <Link to={`/smartphones/${phone.id}`} className="product-link">
               <h3>{phone.producer} {phone.model}</h3>
+            </Link>
+             
               <p>Memory: {phone.memory}GB</p>
               <p>RAM: {phone.ram}GB</p>
               <p className="price">${phone.price.toLocaleString()}</p>
@@ -55,6 +59,7 @@ export function SmartphoneList() {
               <button className="add-to-cart">Add to Cart</button>
             </div>
           </div>
+          
         ))}
       </div>
     </div>

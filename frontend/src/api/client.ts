@@ -13,18 +13,16 @@ export async function apiClient<T>(
     credentials: 'include',
     headers: {
       'Accept': 'application/json',
+      'Content-Type': 'application/json',
     },
     ...config,
   });
 
   if (!response.ok) {
-    const error = await response.text();
-    throw new Error(error || 'Request failed');
-    //const error: ApiError = await response.json();
-    //throw new Error(error.message);
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
   }
 
-  //return response.json();
   return response.json() as Promise<T>;
 }
 /*
@@ -44,6 +42,9 @@ export async function apiClient<T>(endpoint: string): Promise<T> {
 // Конкретные методы API
 export const getSmartphones = (): Promise<Smartphone[]> => 
   apiClient<Smartphone[]>('/smartphones');
+
+export const getSmartphoneById = (id: number): Promise<Smartphone> => 
+  apiClient<Smartphone>(`/smartphones/${id}`);
 
 /*export const login = (credentials: {
   email: string;
