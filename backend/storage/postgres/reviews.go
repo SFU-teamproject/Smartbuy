@@ -9,12 +9,25 @@ import (
 type Review = models.Review
 
 func (db *PostgresDB) GetReview(id int) (Review, error) {
-	row := db.QueryRow("SELECT * FROM reviews WHERE id = $1", id)
-	return db.extractReview(row)
+	row := db.QueryRow(`
+	SELECT reviews.id, smartphone_id, user_id, users.name, rating, comment, reviews.created_at, reviews.updated_at
+	FROM reviews
+	JOIN users on user_id = users.id
+	WHERE reviews.id = $1
+	`, id)
+	review := Review{}
+	err := row.Scan(&review.ID, &review.SmartphoneID, &review.UserID, &review.UserName,
+		&review.Rating, &review.Comment, &review.CreatedAt, &review.UpdatedAt)
+	return review, db.wrapError(err)
 }
 
 func (db *PostgresDB) GetReviews(smartphoneID int) ([]Review, error) {
-	rows, err := db.Query("SELECT * FROM reviews WHERE smartphone_id = $1", smartphoneID)
+	rows, err := db.Query(`
+	SELECT reviews.id, smartphone_id, user_id, users.name, rating, comment, reviews.created_at, reviews.updated_at
+	FROM reviews
+	JOIN users on user_id = users.id
+	WHERE smartphone_id = $1;
+	`, smartphoneID)
 	if err != nil {
 		return nil, db.wrapError(err)
 	}
@@ -49,8 +62,8 @@ func (db *PostgresDB) CreateReview(review Review) (Review, error) {
 
 func (db *PostgresDB) extractReview(row *sql.Row) (Review, error) {
 	review := Review{}
-	err := row.Scan(&review.ID, &review.SmartphoneID, &review.UserID, &review.Rating,
-		&review.Comment, &review.CreatedAt, &review.UpdatedAt)
+	err := row.Scan(&review.ID, &review.SmartphoneID, &review.UserID,
+		&review.Rating, &review.Comment, &review.CreatedAt, &review.UpdatedAt)
 	return review, db.wrapError(err)
 }
 
@@ -59,8 +72,8 @@ func (db *PostgresDB) extractReviews(rows *sql.Rows) ([]Review, error) {
 	reviews := []Review{}
 	for rows.Next() {
 		review := Review{}
-		err := rows.Scan(&review.ID, &review.SmartphoneID, &review.UserID, &review.Rating,
-			&review.Comment, &review.CreatedAt, &review.UpdatedAt)
+		err := rows.Scan(&review.ID, &review.SmartphoneID, &review.UserID, &review.UserName,
+			&review.Rating, &review.Comment, &review.CreatedAt, &review.UpdatedAt)
 		if err != nil {
 			return nil, db.wrapError(err)
 		}

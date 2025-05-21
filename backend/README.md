@@ -75,37 +75,39 @@ GET "http://localhost:8081/api/v1/smartphones/1"
 ### Поля смарфтона:
 ```json
 {
-    "id": 1,
-    "model": "iPhone 16",
-    "producer": "Apple",
-    "memory": 128,
-    "ram": 8,
-    "display_size": 6.1,
-    "price": 93799,
-    "ratings_sum": 13,
-    "ratings_count": 3,
-    "image_path": "ссылка на изображение",
-    "description": "описание",
-    "reviews": [
-      {                  
-        "id": 1,
-        "smartphone_id": 1,
-        "user_id": 2,
-        "rating": 5,
-        "comment": "Шикарный смартфон",
-        "created_at": "2025-03-23T00:07:21.953228Z",
-        "updated_at": "2025-03-23T00:07:21.953228Z"
-      },
-      {
-        "id": 2,
-        "smartphone_id": 1,
-        "user_id": 3,
-        "rating": 4,
-        "created_at": "2025-03-23T00:07:21.953228Z",
-        "updated_at": "2025-03-23T00:07:21.953228Z"
-      }
-    ]
-  }
+  "id": 1,
+  "model": "iPhone 16",
+  "producer": "Apple",
+  "memory": 128,
+  "ram": 8,
+  "display_size": 6.1,
+  "price": 999,
+  "ratings_sum": 9,
+  "ratings_count": 2,
+  "image_path": "https://c.dns-shop.ru/thumb/st1/fit/0/0/1043f341d851923dda2ac92e50f089a1/14ce8c6a5fbaef30feb3cb6b7d742546c045c44eb9207be4acec68cade72a7cf.jpg.webp",
+  "description": "Introducing the all-new iPhone 16 where innovation meets elegance. With a sleek design and cutting-edge technology, the iPhone 16 delivers a stunning display, incredible camera capabilities, and lightning-fast performance that transforms the way you experience mobile devices. Whether you are capturing memories in breathtaking detail, enjoying your favorite content in vibrant color, or seamlessly multitasking, the iPhone 16 elevates every moment. Powered by Apple most advanced chipset, it brings unmatched speed, efficiency, and security to your fingertips. Step into the future with the iPhone 16 - a new standard in smartphone excellence.",
+  "reviews": [
+    {
+      "id": 1,
+      "smartphone_id": 1,
+      "user_id": 2,
+      "user_name": "user1",
+      "rating": 5,
+      "comment": "Best as always.",
+      "created_at": "2025-05-21T19:50:51.888096Z",
+      "updated_at": "2025-05-21T19:50:51.888096Z"
+    },
+    {
+      "id": 2,
+      "smartphone_id": 1,
+      "user_id": 3,
+      "user_name": "user2",
+      "rating": 4,
+      "created_at": "2025-05-21T19:50:51.888096Z",
+      "updated_at": "2025-05-21T19:50:51.888096Z"
+    }
+  ]
+}
 ```
 В запросах нескольких смартфонов ```api/v1/smartphones``` поле ```reviews``` будет полностью отсутствовать
 ### Регистрации нового пользователя:
@@ -291,23 +293,25 @@ GET http://localhost:8081/api/v1/smartphones/1/reviews
     "id": 1,
     "smartphone_id": 1,
     "user_id": 2,
+    "user_name": "user1",
     "rating": 5,
-    "comment": "Шикарный смартфон",
-    "created_at": "2025-03-21T15:15:33.724777Z",
-    "updated_at": "2025-03-21T15:15:33.724777Z"
+    "comment": "Best as always.",
+    "created_at": "2025-05-21T19:50:51.888096Z",
+    "updated_at": "2025-05-21T19:50:51.888096Z"
   },
   {
     "id": 2,
     "smartphone_id": 1,
     "user_id": 3,
-    "rating": 5,
-    "created_at": "2025-03-21T15:15:33.724777Z",
-    "updated_at": "2025-03-21T15:15:33.724777Z"
+    "user_name": "user2",
+    "rating": 4,
+    "created_at": "2025-05-21T19:50:51.888096Z",
+    "updated_at": "2025-05-21T19:50:51.888096Z"
   }
 ]
 ```
 Поле ```comment``` может отсутствовать
-
+Поле ```user_name``` присутствует только при GET всех отзывов по айди смартфона, в остальных отсутствует.
 ### Добавить отзыв к смартфону:
 ```
 POST "http://localhost:8081/api/v1/smartphones/{smartphone_id}/reviews"
@@ -325,7 +329,7 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3Mi
 
 {
     "rating": 5,
-    "comment": "замечательный смартфон"
+    "comment": "great smartphone"
 }
 ```
 ```
@@ -352,8 +356,8 @@ PATCH "http://localhost:8081/api/v1/smartphones/1/reviews/5"
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NDI2Njk2NzUsImlhdCI6MTc0MjU4MzI3NX0.vUuOxfPBbsD30xg5bQdsNC4Dti2UTkPA06icmGvnKNk
 
 {
-    "rating": 1,
-    "comment": "сломался через 2 дня"
+    "rating": 4,
+    "comment": "decent phone"
 }
 ```
 ```
