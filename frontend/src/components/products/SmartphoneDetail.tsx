@@ -14,8 +14,8 @@ export function SmartphoneDetail() {
     const fetchData = async () => {
       try {
         if (!id) return;
-        const data = await getSmartphoneById(parseInt(id));
-        setPhone(data);
+        const smartphone = await getSmartphoneById(parseInt(id));
+        setPhone(smartphone);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error');
       } finally {
@@ -41,14 +41,14 @@ export function SmartphoneDetail() {
         <div className="detail-info">
           <h2>{phone.producer} {phone.model}</h2>
           <div className="specs">
-            <p><strong>Memory:</strong> {phone.memory}GB</p>
+            <p><strong>Память:</strong> {phone.memory}GB</p>
             <p><strong>RAM:</strong> {phone.ram}GB</p>
-            <p><strong>Display:</strong> {phone.display_size}"</p>
-            <p className="price"><strong>Price:</strong> {phone.price.toString()}</p> {/*${phone.price.toLocaleString()}*/}
+            <p><strong>Экран:</strong> {phone.display_size}"</p>
+            <p className="price"><strong>Цена:</strong> {phone.price.toString()}</p> {/*${phone.price.toLocaleString()}*/}
           </div>
           {phone.ratings_count > 0 && (
             <div className="rating">
-              Rating: {(phone.ratings_sum / phone.ratings_count).toFixed(1)}/5
+              Рейтинг: {(phone.ratings_sum / phone.ratings_count).toFixed(1)}/5
               ({phone.ratings_count} reviews)
             </div>
           )}
@@ -57,7 +57,7 @@ export function SmartphoneDetail() {
       </div>
       {phone.description && (
         <div className="description">
-          <h3>Description</h3>
+          <h3>Описание</h3>
           <p>{phone.description}</p>
         </div>
       )}

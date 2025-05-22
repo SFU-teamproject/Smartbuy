@@ -84,11 +84,11 @@ export function SmartphoneList() {
               <Link to={`/smartphones/${phone.id}`} className="product-link">
                 <h3>{phone.producer} {phone.model}</h3>
               </Link>
-              <p>Memory: {phone.memory}GB</p>
+              <p>Память: {phone.memory}GB</p>
               <p>RAM: {phone.ram}GB</p>
               <p className="price">{phone.price.toLocaleString('ru-RU')} </p>
               <div className="rating">
-                Rating: {phone.ratings_count > 0 
+                Рейтинг: {phone.ratings_count > 0 
                   ? (phone.ratings_sum / phone.ratings_count).toFixed(1) 
                   : 'No ratings'}
               </div>

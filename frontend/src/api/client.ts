@@ -43,8 +43,8 @@ export async function apiClient<T>(
 export const getSmartphones = (): Promise<Smartphone[]> => 
   apiClient<Smartphone[]>('/smartphones');
 
-export const getSmartphoneById = (id: number): Promise<Smartphone> => 
-  apiClient<Smartphone>(`/smartphones/${id}`);
+export const getSmartphoneById = (id: number, token?: string): Promise<Smartphone> => 
+  apiClient<Smartphone>(`/smartphones/${id}`, token ? { token } : undefined);
 
 export const getSmartphonesByIds = (ids: number[]): Promise<Smartphone[]> => {
   const idsString = ids.join(',');
