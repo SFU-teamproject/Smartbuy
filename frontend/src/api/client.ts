@@ -1,56 +1,112 @@
-// src/api/client.ts
-import { Smartphone, ApiError } from '@/types';
+import { Smartphone, ApiError, SignupData, AuthResponse, LoginData, User, CartItem, Cart } from '../types';
 
-//const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8081/api/v1';
-//const API_BASE_URL = 'http://localhost:8081/api/v1'; //полный URL
-const API_BASE_URL = '/api/v1'; // Теперь будет проксироваться
+const API_BASE_URL = '/api/v1';
 
 export async function apiClient<T>(
   endpoint: string,
-  config?: RequestInit
+  config?: RequestInit & { token?: string } // Добавляем опциональный token в конфиг
 ): Promise<T> {
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+    ...(config?.token && { 'Authorization': `Bearer ${config.token}` }), // Используем token из конфига
+    ...config?.headers
+  };
+
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     credentials: 'include',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    ...config,
+    headers,
+    ...config
   });
 
+  {/*if (!response.ok) {
+    const errorData = await response.json().catch(() => null);
+    throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
+  }*/}
+
   if (!response.ok) {
+    if (response.status === 401) {
+      // Если токен невалидный, разлогиниваем
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
     const errorData = await response.json().catch(() => null);
     throw new Error(errorData?.message || `HTTP error! status: ${response.status}`);
   }
 
   return response.json() as Promise<T>;
 }
-/*
-export async function apiClient<T>(endpoint: string): Promise<T> {
-  const response = await fetch(`http://localhost:8081/api/v1${endpoint}`);
-  
-  // Принудительная проверка типа
-  const contentType = response.headers.get('content-type');
-  if (!contentType?.includes('application/json')) {
-    const text = await response.text();
-    throw new Error(`Expected JSON, got ${contentType}: ${text.substring(0, 100)}`);
-  }
 
-  return response.json();
-}
-  */
+
 // Конкретные методы API
+
 export const getSmartphones = (): Promise<Smartphone[]> => 
   apiClient<Smartphone[]>('/smartphones');
 
 export const getSmartphoneById = (id: number): Promise<Smartphone> => 
   apiClient<Smartphone>(`/smartphones/${id}`);
 
-/*export const login = (credentials: {
-  email: string;
-  password: string;
-}): Promise<{ token: string }> =>
-  apiClient('/login', {
+export const getSmartphonesByIds = (ids: number[]): Promise<Smartphone[]> => {
+  const idsString = ids.join(',');
+  return apiClient<Smartphone[]>(`/smartphones?ids=${idsString}`);
+};
+
+export const signup = (data: SignupData): Promise<AuthResponse> => 
+  apiClient<AuthResponse>('/signup', {
     method: 'POST',
-    body: JSON.stringify(credentials),
-  });*/
+    body: JSON.stringify(data)
+  });
+
+export const login = (data: LoginData): Promise<AuthResponse> => 
+  apiClient<AuthResponse>('/login', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+
+// Пример обновленного метода с токеном
+export const getUsers = (token: string): Promise<User[]> => 
+  apiClient<User[]>('/users', { token });
+
+export const getUserById = (id: number, token: string): Promise<User> => 
+  apiClient<User>(`/users/${id}`, { token });
+
+export const getCartById = (cartId: number, token: string): Promise<Cart> =>
+  apiClient<Cart>(`/carts/${cartId}`, { token });
+
+// Получить корзину пользователя
+export const getCartByUserId = (userId: number, token: string): Promise<Cart> =>
+  apiClient<Cart>(`/carts?user_id=${userId}`, { token });
+
+// Получить все корзины (для админа)
+export const getAllCarts = (token: string): Promise<Cart[]> =>
+  apiClient<Cart[]>('/carts', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+
+// Получить items корзины
+export const getCartItems = (cartId: number, token: string): Promise<CartItem[]> =>
+  apiClient<CartItem[]>(`/carts/${cartId}/items`,  { token });
+
+// Добавить item в корзину
+export const addCartItem = (cartId: number, smartphoneId: number, token: string): Promise<CartItem> =>
+  apiClient<CartItem>(`/carts/${cartId}/items`, {
+    method: 'POST',
+    headers: { token },
+    body: JSON.stringify({ smartphone_id: smartphoneId })
+  });
+
+// Изменить количество item
+export const updateCartItem = (cartId: number, itemId: number, quantity: number, token: string): Promise<CartItem> =>
+  apiClient<CartItem>(`/carts/${cartId}/items/${itemId}`, {
+    method: 'PATCH',
+    headers: {token},
+    body: JSON.stringify({ quantity })
+  });
+
+// Удалить item из корзины
+export const deleteCartItem = (cartId: number, itemId: number, token: string): Promise<void> =>
+  apiClient<void>(`/carts/${cartId}/items/${itemId}`, {
+    method: 'DELETE',
+    headers: {token}
+  });
+

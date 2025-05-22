@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { getSmartphoneById } from '../api/client';
+import { getSmartphoneById } from '../../api/client';
 import { useParams } from 'react-router-dom';
-import { Smartphone } from '../types';
+import { Smartphone } from '../../types';
 import './SmartphoneDetail.css'; 
 
 export function SmartphoneDetail() {
@@ -44,7 +44,7 @@ export function SmartphoneDetail() {
             <p><strong>Memory:</strong> {phone.memory}GB</p>
             <p><strong>RAM:</strong> {phone.ram}GB</p>
             <p><strong>Display:</strong> {phone.display_size}"</p>
-            <p className="price"><strong>Price:</strong> ${phone.price.toLocaleString()}</p>
+            <p className="price"><strong>Price:</strong> {phone.price.toString()}</p> {/*${phone.price.toLocaleString()}*/}
           </div>
           {phone.ratings_count > 0 && (
             <div className="rating">

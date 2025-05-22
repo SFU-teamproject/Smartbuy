@@ -68,6 +68,7 @@
   .error {
     color: #d00;
   }
+
   .product-link {
     text-decoration: none;
     color: inherit;
@@ -77,3 +78,33 @@
     color: #0066cc;
     text-decoration: underline;
   }
+
+  /* Стили для блока фильтрации */
+.filter-controls {
+  margin: 20px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.filter-button {
+  padding: 8px 16px;
+  background: #f0c14b;
+  border: 1px solid #a88734;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.filter-button:hover {
+  background: #ddb347;
+}
+.price {
+  font-weight: bold;
+  color: #2a6496;
+  font-size: 1.2em;
+}
+
+.price::after {
+  content: " ₽";
+  font-weight: normal;
+}
