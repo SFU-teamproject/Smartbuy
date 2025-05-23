@@ -12,7 +12,7 @@ import (
 type Smartphone = models.Smartphone
 
 func (db *PostgresDB) GetSmartphones() ([]Smartphone, error) {
-	rows, err := db.Query("SELECT * FROM smartphones")
+	rows, err := db.Query("SELECT * FROM smartphones order by price")
 	if err != nil {
 		return nil, db.wrapError(err)
 	}
@@ -27,7 +27,7 @@ func (db *PostgresDB) GetSmartphonesByIDs(IDs []int) ([]Smartphone, error) {
 		}
 		IDsStr.WriteString(strconv.Itoa(ID))
 	}
-	query := fmt.Sprintf("SELECT * FROM smartphones WHERE id IN (%s)", IDsStr.String())
+	query := fmt.Sprintf("SELECT * FROM smartphones WHERE id IN (%s) order by price", IDsStr.String())
 	rows, err := db.Query(query)
 	if err != nil {
 		return nil, db.wrapError(err)
