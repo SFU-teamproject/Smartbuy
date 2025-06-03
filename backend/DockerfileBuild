@@ -1,0 +1,4 @@
+FROM scratch
+COPY smartbuy smartbuy
+EXPOSE 8081
+CMD ["/smartbuy"]
