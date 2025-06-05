@@ -1,14 +1,8 @@
 package storage
 
 import (
-	"errors"
-
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 )
-
-var ErrNotFound = errors.New("not found")
-var ErrAlreadyExists = errors.New("already exists")
-var ErrInternal = errors.New("internal server error")
 
 type Storage interface {
 	GetSmartphone(ID int) (models.Smartphone, error)
