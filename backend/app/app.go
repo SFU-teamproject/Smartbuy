@@ -8,17 +8,10 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
 	"github.com/sfu-teamproject/smartbuy/backend/logger"
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 	"github.com/sfu-teamproject/smartbuy/backend/storage"
-)
-
-var (
-	errBadRequest         = errors.New("bad request")
-	errInternal           = errors.New("internal server error")
-	errInvalidCredentials = errors.New("invalid credentials")
-	errUnauthorized       = errors.New("unauthorized")
-	errForbidden          = errors.New("forbidden")
 )
 
 type App struct {
@@ -38,23 +31,23 @@ func (app *App) ErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	app.Log.Errorln(r.Method, r.URL, err.Error())
 	var code int
-	if errors.Is(err, storage.ErrNotFound) {
-		err = storage.ErrNotFound
+	if errors.Is(err, apperrors.ErrNotFound) {
+		err = apperrors.ErrNotFound
 		code = http.StatusNotFound
-	} else if errors.Is(err, errBadRequest) {
-		err = errBadRequest
+	} else if errors.Is(err, apperrors.ErrBadRequest) {
+		err = apperrors.ErrBadRequest
 		code = http.StatusBadRequest
-	} else if errors.Is(err, errInvalidCredentials) || errors.Is(err, errUnauthorized) {
-		err = errUnauthorized
+	} else if errors.Is(err, apperrors.ErrInvalidCredentials) || errors.Is(err, apperrors.ErrUnauthorized) {
+		err = apperrors.ErrUnauthorized
 		code = http.StatusUnauthorized
-	} else if errors.Is(err, errForbidden) {
-		err = errForbidden
+	} else if errors.Is(err, apperrors.ErrForbidden) {
+		err = apperrors.ErrForbidden
 		code = http.StatusForbidden
-	} else if errors.Is(err, storage.ErrAlreadyExists) {
-		err = storage.ErrAlreadyExists
+	} else if errors.Is(err, apperrors.ErrAlreadyExists) {
+		err = apperrors.ErrAlreadyExists
 		code = http.StatusConflict
 	} else {
-		err = errInternal
+		err = apperrors.ErrInternal
 		code = http.StatusInternalServerError
 	}
 	w.WriteHeader(code)
@@ -79,7 +72,7 @@ func (app *App) ExtractPathValue(r *http.Request, pathValue string) (int, error)
 	id, err := strconv.Atoi(stringID)
 	if stringID == "" || err != nil {
 		return 0, fmt.Errorf("%w: error extracting path value(%s, %s): %w",
-			errBadRequest, pathValue, stringID, err)
+			apperrors.ErrBadRequest, pathValue, stringID, err)
 	}
 	return id, nil
 }

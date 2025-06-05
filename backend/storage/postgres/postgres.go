@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/lib/pq"
-	"github.com/sfu-teamproject/smartbuy/backend/storage"
+	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
 )
 
 type PostgresDB struct {
@@ -34,16 +34,16 @@ func (db *PostgresDB) wrapError(err error) error {
 		return nil
 	}
 	var pqErr *pq.Error
-	var errWrapper = storage.ErrInternal
+	var errWrapper = apperrors.ErrInternal
 	if errors.As(err, &pqErr) {
 		switch pqErr.Code {
 		case "23505":
-			errWrapper = storage.ErrAlreadyExists
+			errWrapper = apperrors.ErrAlreadyExists
 		case "0200":
-			errWrapper = storage.ErrNotFound
+			errWrapper = apperrors.ErrNotFound
 		}
 	} else if errors.Is(err, sql.ErrNoRows) {
-		errWrapper = storage.ErrNotFound
+		errWrapper = apperrors.ErrNotFound
 	}
 	err = fmt.Errorf("%w: %w", errWrapper, err)
 	return err
