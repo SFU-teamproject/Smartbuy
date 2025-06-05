@@ -18,10 +18,10 @@ func TestGetCart(t *testing.T) {
 	ml := new(mocklogger.MockLogger)
 	currTime := time.Now()
 	ms.On("GetCartItems", mock.Anything).Return([]models.CartItem{}, nil)
-	ms.On("GetCart", 1).Return(models.Cart{1, 1, currTime, currTime, nil}, nil)
+	ms.On("GetCart", 1).Return(models.Cart{ID: 1, UserID: 1, CreatedAt: currTime, UpdatedAt: currTime, Items: nil}, nil)
 	ms.On("GetCart", 2).Return(models.Cart{}, apperrors.ErrNotFound)
-	ms.On("GetCart", 3).Return(models.Cart{3, 3, currTime, currTime, nil}, nil)
-	ms.On("GetCart", 4).Return(models.Cart{4, 4, currTime, currTime, nil}, nil)
+	ms.On("GetCart", 3).Return(models.Cart{ID: 3, UserID: 3, CreatedAt: currTime, UpdatedAt: currTime, Items: nil}, nil)
+	ms.On("GetCart", 4).Return(models.Cart{ID: 4, UserID: 4, CreatedAt: currTime, UpdatedAt: currTime, Items: nil}, nil)
 	ml.On("Errorln", mock.Anything, mock.Anything, mock.Anything)
 
 	app := NewApp(ml, nil, ms)
