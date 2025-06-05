@@ -31,7 +31,7 @@ func (app *App) GetUser(w http.ResponseWriter, r *http.Request) {
 		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
 		return
 	}
-	if userID != ID || role != models.RoleAdmin {
+	if userID != ID && role != models.RoleAdmin {
 		app.ErrorJSON(w, r, errForbidden)
 		return
 	}
