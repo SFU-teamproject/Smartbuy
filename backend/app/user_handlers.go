@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,8 +11,8 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
 	"github.com/sfu-teamproject/smartbuy/backend/models"
-	"github.com/sfu-teamproject/smartbuy/backend/storage"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -28,11 +29,11 @@ func (app *App) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	if userID != ID || role != models.RoleAdmin {
-		app.ErrorJSON(w, r, errForbidden)
+		app.ErrorJSON(w, r, apperrors.ErrForbidden)
 		return
 	}
 	user, err := app.DB.GetUser(ID)
@@ -59,12 +60,12 @@ func (app *App) GetUser(w http.ResponseWriter, r *http.Request) {
 func (app *App) GetUsers(w http.ResponseWriter, r *http.Request) {
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	if role != models.RoleAdmin {
 		app.ErrorJSON(w, r, fmt.Errorf("%w: user %d (role %s) does not have required role",
-			errForbidden, userID, role))
+			apperrors.ErrForbidden, userID, role))
 		return
 	}
 	users, err := app.DB.GetUsers()
@@ -79,7 +80,7 @@ func (app *App) GetUserByName(w http.ResponseWriter, r *http.Request) {
 	name := r.URL.Query().Get("name")
 	name = strings.TrimSpace(name)
 	if name == "" {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: empty user name", errBadRequest))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: empty user name", apperrors.ErrBadRequest))
 		return
 	}
 	user, err := app.DB.GetUserByName(name)
@@ -95,7 +96,7 @@ func (app *App) Signup(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding user: %w", errBadRequest, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding user: %w", apperrors.ErrBadRequest, err))
 		return
 	}
 	hashedPass, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
@@ -118,13 +119,13 @@ func (app *App) Login(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	err := json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding user: %w", errBadRequest, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding user: %w", apperrors.ErrBadRequest, err))
 		return
 	}
 	existingUser, err := app.DB.GetUserByName(user.Name)
 	if err != nil {
-		if errors.Is(err, storage.ErrNotFound) {
-			app.ErrorJSON(w, r, fmt.Errorf("%w: %w", errInvalidCredentials, err))
+		if errors.Is(err, apperrors.ErrNotFound) {
+			app.ErrorJSON(w, r, fmt.Errorf("%w: %w", apperrors.ErrInvalidCredentials, err))
 			return
 		}
 		app.ErrorJSON(w, r, fmt.Errorf("error getting user from database: %w", err))
@@ -132,7 +133,7 @@ func (app *App) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(existingUser.Password), []byte(user.Password))
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: %w", errInvalidCredentials, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: %w", apperrors.ErrInvalidCredentials, err))
 		return
 	}
 	claims := Claims{
@@ -167,4 +168,17 @@ func (app *App) Login(w http.ResponseWriter, r *http.Request) {
 		User  models.User `json:"user"`
 		Token string      `json:"token"`
 	}{Token: s, User: existingUser})
+}
+
+func createContextWithClaims(userID string, role models.Role) context.Context {
+	claims := Claims{
+		Role: role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   userID,
+			Issuer:    "Smartbuy",
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+		},
+	}
+	return context.WithValue(context.Background(), ClaimsKey, claims)
 }

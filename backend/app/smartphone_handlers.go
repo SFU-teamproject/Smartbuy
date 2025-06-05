@@ -6,6 +6,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 )
 
@@ -41,7 +42,7 @@ func (app *App) GetSmartphones(w http.ResponseWriter, r *http.Request) {
 		for i, IDStr := range IDsStr {
 			ID, err := strconv.Atoi(IDStr)
 			if err != nil {
-				app.ErrorJSON(w, r, fmt.Errorf("%w: invalid id(%s): %w", errBadRequest, IDStr, err))
+				app.ErrorJSON(w, r, fmt.Errorf("%w: invalid id(%s): %w", apperrors.ErrBadRequest, IDStr, err))
 			}
 			IDs[i] = ID
 		}
