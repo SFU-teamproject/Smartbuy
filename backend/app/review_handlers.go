@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 )
 
@@ -39,7 +40,7 @@ func (app *App) GetReviews(w http.ResponseWriter, r *http.Request) {
 func (app *App) CreateReview(w http.ResponseWriter, r *http.Request) {
 	userID, _, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	smartphoneID, err := app.ExtractPathValue(r, "smartphone_id")
@@ -50,7 +51,7 @@ func (app *App) CreateReview(w http.ResponseWriter, r *http.Request) {
 	var review models.Review
 	err = json.NewDecoder(r.Body).Decode(&review)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding review: %w", errBadRequest, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding review: %w", apperrors.ErrBadRequest, err))
 		return
 	}
 	review.SmartphoneID = smartphoneID
@@ -67,7 +68,7 @@ func (app *App) CreateReview(w http.ResponseWriter, r *http.Request) {
 func (app *App) UpdateReview(w http.ResponseWriter, r *http.Request) {
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	var review models.Review
@@ -78,7 +79,7 @@ func (app *App) UpdateReview(w http.ResponseWriter, r *http.Request) {
 	}
 	err = json.NewDecoder(r.Body).Decode(&review)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding review: %w", errBadRequest, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding review: %w", apperrors.ErrBadRequest, err))
 		return
 	}
 	existingReview, err := app.DB.GetReview(review.ID)
@@ -87,7 +88,7 @@ func (app *App) UpdateReview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if existingReview.UserID != userID && role != models.RoleAdmin {
-		app.ErrorJSON(w, r, errForbidden)
+		app.ErrorJSON(w, r, apperrors.ErrForbidden)
 		return
 	}
 	smID, err := app.ExtractPathValue(r, "smartphone_id")
@@ -98,7 +99,7 @@ func (app *App) UpdateReview(w http.ResponseWriter, r *http.Request) {
 	review.SmartphoneID = smID
 	if existingReview.SmartphoneID != review.SmartphoneID {
 		app.ErrorJSON(w, r, fmt.Errorf("%w: review %d is not for smartphone %d",
-			errBadRequest, review.ID, smID))
+			apperrors.ErrBadRequest, review.ID, smID))
 		return
 	}
 	updatedReview, err := app.DB.UpdateReview(review)
@@ -112,7 +113,7 @@ func (app *App) UpdateReview(w http.ResponseWriter, r *http.Request) {
 func (app *App) DeleteReview(w http.ResponseWriter, r *http.Request) {
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	reviewID, err := app.ExtractPathValue(r, "review_id")
@@ -126,7 +127,7 @@ func (app *App) DeleteReview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if existingReview.UserID != userID && role != models.RoleAdmin {
-		app.ErrorJSON(w, r, errForbidden)
+		app.ErrorJSON(w, r, apperrors.ErrForbidden)
 		return
 	}
 	smID, err := app.ExtractPathValue(r, "smartphone_id")
@@ -136,7 +137,7 @@ func (app *App) DeleteReview(w http.ResponseWriter, r *http.Request) {
 	}
 	if existingReview.SmartphoneID != smID {
 		app.ErrorJSON(w, r, fmt.Errorf("%w: review %d is not for smartphone %d",
-			errBadRequest, reviewID, smID))
+			apperrors.ErrBadRequest, reviewID, smID))
 		return
 	}
 	deletedReview, err := app.DB.DeleteReview(reviewID)
