@@ -48,6 +48,11 @@ func (app *App) CreateReview(w http.ResponseWriter, r *http.Request) {
 		app.ErrorJSON(w, r, err)
 		return
 	}
+	_, err = app.DB.GetSmartphone(smartphoneID)
+	if err != nil {
+		app.ErrorJSON(w, r, err)
+		return
+	}
 	var review models.Review
 	err = json.NewDecoder(r.Body).Decode(&review)
 	if err != nil {

@@ -17,6 +17,7 @@ func TestGetCart(t *testing.T) {
 	ms := new(mockstorage.MockStorage)
 	ml := new(mocklogger.MockLogger)
 	currTime := time.Now()
+	ms.On("GetCartItems", mock.Anything).Return([]models.CartItem{}, nil)
 	ms.On("GetCart", 1).Return(models.Cart{1, 1, currTime, currTime, nil}, nil)
 	ms.On("GetCart", 2).Return(models.Cart{}, apperrors.ErrNotFound)
 	ms.On("GetCart", 3).Return(models.Cart{3, 3, currTime, currTime, nil}, nil)
