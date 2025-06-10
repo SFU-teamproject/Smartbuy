@@ -6,9 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"strconv"
 	"testing"
-	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
@@ -247,22 +245,8 @@ func TestEncode(t *testing.T) {
 func TestGetClaims(t *testing.T) {
 	testApp := NewApp(nil, nil, nil) // App instance not critical for this test
 
-	// Helper to create a context with claims
-	createContextWithClaims := func(userID int, role models.Role) context.Context {
-		// Using app.Claims as it's the actual type expected by GetClaims
-		claims := &Claims{
-			RegisteredClaims: jwt.RegisteredClaims{
-				Subject:   strconv.Itoa(userID),
-				Issuer:    "Smartbuy",                                    // Set a dummy issuer to avoid issues in app.Auth
-				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)), // Dummy expiry
-			},
-			Role: role,
-		}
-		return context.WithValue(context.Background(), ClaimsKey, claims)
-	}
-
 	t.Run("Success", func(t *testing.T) {
-		ctx := createContextWithClaims(123, models.RoleUser)
+		ctx := createContextWithClaims("123", models.RoleUser)
 		req := httptest.NewRequest(http.MethodGet, "/test", nil).WithContext(ctx)
 
 		userID, role, err := testApp.GetClaims(req)
@@ -272,7 +256,7 @@ func TestGetClaims(t *testing.T) {
 	})
 
 	t.Run("No Claims in Context", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodGet, "/test", nil) // No context with claims
+		req := httptest.NewRequest(http.MethodGet, "/test", nil)
 
 		userID, role, err := testApp.GetClaims(req)
 		assert.Error(t, err)
@@ -282,7 +266,7 @@ func TestGetClaims(t *testing.T) {
 	})
 
 	t.Run("Claims Type Mismatch", func(t *testing.T) {
-		ctx := context.WithValue(context.Background(), ClaimsKey, "wrong type") // Pass wrong type
+		ctx := context.WithValue(context.Background(), ClaimsKey, "wrong type")
 		req := httptest.NewRequest(http.MethodGet, "/test", nil).WithContext(ctx)
 
 		userID, role, err := testApp.GetClaims(req)
