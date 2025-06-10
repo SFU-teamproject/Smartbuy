@@ -171,7 +171,7 @@ func (app *App) Login(w http.ResponseWriter, r *http.Request) {
 }
 
 func createContextWithClaims(userID string, role models.Role) context.Context {
-	claims := Claims{
+	claims := &Claims{
 		Role: role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Subject:   userID,
