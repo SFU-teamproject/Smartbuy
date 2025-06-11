@@ -6,6 +6,7 @@ import './SmartphoneList.css';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { addCartItem } from '../../api/client';
+import Pagination from './Pagination/Pagination';
 
 export function SmartphoneList() {
   // Все хуки вызываются в начале, до любых условий
@@ -13,7 +14,7 @@ export function SmartphoneList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filteredIds, setFilteredIds] = useState<number[] | null>(null);
-  const { user, token } = useAuth(); // Хук вызывается в начале компонента
+  const { user, token, refreshCart } = useAuth(); // Хук вызывается в начале компонента
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,10 +50,22 @@ export function SmartphoneList() {
     try {
       await addCartItem(user.cart.id, smartphoneId, token);
       alert('Item added to cart!');
+      refreshCart();
     } catch (error) {
       console.error('Failed to add to cart:', error);
     }
   };
+
+  const inBucket = (smartphoneId: number) => {
+    const items = user?.cart?.items;
+    if (items) {
+      if (items.find(item => item.smartphone_id === smartphoneId)) {
+        return true;
+      } 
+    }
+    return false;
+  };
+  
 
   const ITEMS_PER_PAGE = 8;
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -116,32 +129,21 @@ export function SmartphoneList() {
               <button 
                 onClick={() => handleAddToCart(phone.id)} 
                 className="add-to-cart"
+                disabled={inBucket(phone.id)}
               >
-                Добавить в корзину
+                {inBucket(phone.id) ? "Уже в корзине" : "Добавить в корзину"}
               </button>
             </div>
           </div>
         ))}
       </div>
-      <div style={{ display: 'flex', gap: '8px', marginTop: '16px' }}>
-        <button onClick={handlePrevPage} disabled={currentPage === 1}>
-          Назад
-        </button>
-        {pageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => handlePageClick(number)}
-            style={{
-              fontWeight: currentPage === number ? 'bold' : 'normal',
-            }}
-          >
-            {number}
-          </button>
-        ))}
-        <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-          Вперед
-        </button>
-      </div>
+      <Pagination
+      currentPage={currentPage}
+      totalPages={totalPages}
+      onPageChange={handlePageClick}
+      onPrevPage={handlePrevPage}
+      onNextPage={handleNextPage}
+      />
     </div>
   );
 }

@@ -52,6 +52,3 @@ export interface LoginData {
 }
 
 export interface SignupData extends LoginData {}
-
-
-

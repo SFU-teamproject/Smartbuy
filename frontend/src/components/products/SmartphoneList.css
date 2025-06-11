@@ -108,3 +108,25 @@
   content: " ₽";
   font-weight: normal;
 }
+
+.pagination-wrapper {
+  text-align: center;
+}
+
+.pagination-container {
+  display: inline-block;
+}
+
+.pagination-item {
+  border: 1px solid #ddd;
+  background: transparent;
+  margin: 4px;
+}
+
+.pagination-item-active {
+  border: 1px solid #f0c14b;
+  background: #f0c14b;
+  color: white;
+  font-weight: bold;
+  margin: 4px;
+}

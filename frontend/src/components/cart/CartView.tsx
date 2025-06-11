@@ -97,7 +97,7 @@ export const CartView = () => {
         ) : (
           <>
             <ul className="cart-items">
-              {items.map(item => (
+              {items.sort((a, b) => a.id - b.id).map(item => (
                 <motion.li
                   key={item.id}
                   className="cart-item"

@@ -11,7 +11,7 @@ export function SmartphoneDetail() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const { id } = useParams(); // Получаем ID из URL
-  const { user, token } = useAuth(); // Хук вызывается в начале компонента
+  const { user, token, refreshCart } = useAuth(); // Хук вызывается в начале компонента
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,10 +34,21 @@ export function SmartphoneDetail() {
       try {
         await addCartItem(user.cart.id, smartphoneId, token);
         alert('Item added to cart!');
+        refreshCart();
       } catch (error) {
         console.error('Failed to add to cart:', error);
       }
     };
+
+  const inBucket = (smartphoneId: number) => {
+    const items = user?.cart?.items;
+    if (items) {
+      if (items.find(item => item.smartphone_id === smartphoneId)) {
+        return true;
+      } 
+    }
+    return false;
+  };
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -65,7 +76,7 @@ export function SmartphoneDetail() {
               ({phone.ratings_count} reviews)
             </div>
           )}
-          <button className="add-to-cart" onClick={() => handleAddToCart(phone.id)} >Add to Cart</button>
+          <button className="add-to-cart" onClick={() => handleAddToCart(phone.id)} disabled={inBucket(phone.id)}>{inBucket(phone.id) ? "Уже в корзине" : "Добавить в корзину"}</button>
         </div>
       </div>
       {phone.description && (

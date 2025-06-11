@@ -20,9 +20,7 @@ export async function apiClient<T>(
   });
 
   if (!response.ok) {
-    console.log("respone not ok")
     if (response.status === 401) {
-      console.log("response 401")
       // Если токен невалидный, разлогиниваем
       localStorage.removeItem('token');
       window.location.href = '/login';
