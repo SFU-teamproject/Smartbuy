@@ -1,0 +1,44 @@
+/* src/components/products/SmartphoneDetail.css */
+.smartphone-detail {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .detail-container {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+  
+  .detail-image {
+    width: 400px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 8px;
+  }
+  
+  .detail-info {
+    flex: 1;
+  }
+  
+  .specs {
+    margin: 20px 0;
+  }
+  
+  .price {
+    color: #e63946;
+    font-size: 1.5em;
+    font-weight: bold;
+  }
+  
+  .rating {
+    color: #457b9d;
+    margin: 15px 0;
+  }
+  
+  .description {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+  }
