@@ -17,16 +17,17 @@ services:
     networks:
       - smartbuy-network
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3000:3000"  # Assuming frontend runs on 3000 (e.g., React default)
-  #   depends_on:
-  #     - backend
-  #   networks:
-  #     - smartbuy-network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: smartbuy_frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - smartbuy-network
 
   postgres:
     image: postgres:17-alpine
