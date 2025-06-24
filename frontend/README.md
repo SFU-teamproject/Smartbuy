@@ -1,46 +1,41 @@
-# Getting Started with Create React App
+# Фронтенд
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Локальный запуск фронтенда
+Установить зависимости
+```bash
+npm install
+```
+Собрать проект
+```bash
+npm build
+```
+Запустиь приложение в режиме разработки
+```bash
+npm start
+```
+## Запуск полного приложения через docker compose
+Осуществляется из корня проекта командой
+```
+docker compose up
+```
+## Основные страницы
 
-## Available Scripts
+### Регистрация /signup
 
-In the project directory, you can run:
+На странице регистрации осуществляется создание нового аккаунта. Нужно ввести имя аккаунта и пароль и нажать кнопку "зарегистрироваться".
 
-### `npm start`
+### Логин /login
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+На странице логина осуществляется вход в уже существующий аккаунт. Нужно ввести имя аккаунта и пароль и нажать кнопку "войти".
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+### Главная /
 
-### `npm test`
+На главной странице показаны наши смартфоны, доступные к приобретению. Смартфоны отсортированы по цене в возрастающем порядке. Они представлены карточками с информацией и возможностью добавления в корзину и перехода на страницу смартфона для просмотра более подробной информации.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Страница смартфона /smartphones/{smartphone_id}
 
-### `npm run build`
+На странице смартфона отображается полная информация о смартфоне, также есть возможность добавить смартфон в корзину.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Корзина /cart
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+В корзине находятся смартфоны, которые были помещены в корзину либо с главной страницы, либо со страницы смарфтона. Здесь можно оплатить смартфон соответсвующий кнопкой, либо изменить количество определенного смартфона кнопками "+" и "-".
