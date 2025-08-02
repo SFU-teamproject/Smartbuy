@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,8 +11,8 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
 	"github.com/sfu-teamproject/smartbuy/backend/models"
-	"github.com/sfu-teamproject/smartbuy/backend/storage"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -123,7 +124,7 @@ func (app *App) Login(w http.ResponseWriter, r *http.Request) {
 	}
 	existingUser, err := app.DB.GetUserByName(user.Name)
 	if err != nil {
-		if errors.Is(err, storage.ErrNotFound) {
+		if errors.Is(err, apperrors.ErrNotFound) {
 			app.ErrorJSON(w, r, fmt.Errorf("%w: %w", errInvalidCredentials, err))
 			return
 		}
@@ -167,4 +168,17 @@ func (app *App) Login(w http.ResponseWriter, r *http.Request) {
 		User  models.User `json:"user"`
 		Token string      `json:"token"`
 	}{Token: s, User: existingUser})
+}
+
+func createContextWithClaims(userID string, role models.Role) context.Context {
+	claims := &Claims{
+		Role: role,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   userID,
+			Issuer:    "Smartbuy",
+			IssuedAt:  jwt.NewNumericDate(time.Now()),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+		},
+	}
+	return context.WithValue(context.Background(), ClaimsKey, claims)
 }

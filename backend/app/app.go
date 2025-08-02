@@ -8,6 +8,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
 	"github.com/sfu-teamproject/smartbuy/backend/logger"
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 	"github.com/sfu-teamproject/smartbuy/backend/storage"
@@ -38,8 +39,8 @@ func (app *App) ErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
 	w.Header().Set("X-Content-Type-Options", "nosniff")
 	app.Log.Errorln(r.Method, r.URL, err.Error())
 	var code int
-	if errors.Is(err, storage.ErrNotFound) {
-		err = storage.ErrNotFound
+	if errors.Is(err, apperrors.ErrNotFound) {
+		err = apperrors.ErrNotFound
 		code = http.StatusNotFound
 	} else if errors.Is(err, errBadRequest) {
 		err = errBadRequest
@@ -50,8 +51,8 @@ func (app *App) ErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
 	} else if errors.Is(err, errForbidden) {
 		err = errForbidden
 		code = http.StatusForbidden
-	} else if errors.Is(err, storage.ErrAlreadyExists) {
-		err = storage.ErrAlreadyExists
+	} else if errors.Is(err, apperrors.ErrAlreadyExists) {
+		err = apperrors.ErrAlreadyExists
 		code = http.StatusConflict
 	} else {
 		err = errInternal
