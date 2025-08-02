@@ -14,12 +14,15 @@ type PostgresDB struct {
 	*sql.DB
 }
 
-func NewPostgresDB() (*PostgresDB, error) {
+func NewPostgresDB(isTestDB bool) (*PostgresDB, error) {
 	host := os.Getenv("POSTGRES_HOST")
 	port := os.Getenv("POSTGRES_PORT")
 	user := os.Getenv("POSTGRES_USER")
 	pass := os.Getenv("POSTGRES_PASSWORD")
 	dbname := os.Getenv("POSTGRES_DB")
+	if isTestDB {
+		dbname = os.Getenv("POSTGRES_DB_TEST")
+	}
 	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		host, port, user, pass, dbname)
 	db, err := sql.Open("postgres", connStr)

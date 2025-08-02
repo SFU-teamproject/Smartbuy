@@ -21,7 +21,7 @@ func main() {
 		Addr:     ":8081",
 		ErrorLog: logger.Error,
 	}
-	postgres, err := postgres.NewPostgresDB()
+	postgres, err := postgres.NewPostgresDB(false)
 	if err != nil {
 		logger.Errorf("Error creating database: %v", err)
 		os.Exit(1)
