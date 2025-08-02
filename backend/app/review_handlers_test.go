@@ -20,7 +20,7 @@ func TestGetReviews(t *testing.T) {
 	ms := new(mockstorage.MockStorage)
 	ml := new(mocklogger.MockLogger)
 	currTime := time.Now()
-	ms.On("GetReviews", 1).Return([]models.Review{{1, 1, 1, "user1", 5, nil, currTime, currTime}}, nil)
+	ms.On("GetReviews", 1).Return([]models.Review{{ID: 1, SmartphoneID: 1, UserID: 1, UserName: "user1", Rating: 5, Comment: nil, CreatedAt: currTime, UpdatedAt: currTime}}, nil)
 	ms.On("GetReviews", 2).Return([]models.Review{}, nil)
 	ms.On("GetReviews", 3).Return([]models.Review{}, apperrors.ErrNotFound)
 	ml.On("Errorln", mock.Anything, mock.Anything, mock.Anything)
@@ -51,8 +51,8 @@ func TestCreateReview(t *testing.T) {
 	ms := new(mockstorage.MockStorage)
 	ml := new(mocklogger.MockLogger)
 	currTime := time.Now().Round(0)
-	r := models.Review{1, 1, 1, "user", 5, nil, currTime, currTime}
-	rErr := models.Review{1, 2, 1, "user", 5, nil, currTime, currTime}
+	r := models.Review{ID: 1, SmartphoneID: 1, UserID: 1, UserName: "user", Rating: 5, Comment: nil, CreatedAt: currTime, UpdatedAt: currTime}
+	rErr := models.Review{ID: 1, SmartphoneID: 2, UserID: 1, UserName: "user", Rating: 5, Comment: nil, CreatedAt: currTime, UpdatedAt: currTime}
 	ms.On("CreateReview", r).Return(r, nil)
 	ms.On("GetSmartphone", 1).Return(models.Smartphone{}, nil)
 	ms.On("GetSmartphone", 2).Return(models.Smartphone{}, apperrors.ErrNotFound)

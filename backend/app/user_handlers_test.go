@@ -22,9 +22,9 @@ func TestGetUser(t *testing.T) {
 	ms := new(mockstorage.MockStorage)
 	ml := new(mocklogger.MockLogger)
 	currTime := time.Now().Round(0)
-	user2 := models.User{2, "user2", "", models.RoleUser, currTime, models.Cart{}}
-	user1 := models.User{1, "user1", "", models.RoleUser, currTime, models.Cart{}}
-	user3 := models.User{3, "user3", "", models.RoleUser, currTime, models.Cart{}}
+	user2 := models.User{ID: 2, Name: "user2", Password: "", Role: models.RoleUser, CreatedAt: currTime, Cart: models.Cart{}}
+	user1 := models.User{ID: 1, Name: "user1", Password: "", Role: models.RoleUser, CreatedAt: currTime, Cart: models.Cart{}}
+	user3 := models.User{ID: 3, Name: "user3", Password: "", Role: models.RoleUser, CreatedAt: currTime, Cart: models.Cart{}}
 	ms.On("GetUser", 1).Return(user1, nil)
 	ms.On("GetUser", 2).Return(user2, nil)
 	ms.On("GetUser", 3).Return(models.User{}, apperrors.ErrNotFound)
@@ -69,7 +69,7 @@ func TestSignup(t *testing.T) {
 	ms := new(mockstorage.MockStorage)
 	ml := new(mocklogger.MockLogger)
 	currTime := time.Now().Round(0)
-	user1 := models.User{1, "user1", "", models.RoleUser, currTime, models.Cart{}}
+	user1 := models.User{ID: 1, Name: "user1", Password: "", Role: models.RoleUser, CreatedAt: currTime, Cart: models.Cart{}}
 	ms.On("CreateUser", mock.Anything).Return(user1, nil)
 	ml.On("Errorln", mock.Anything, mock.Anything, mock.Anything)
 	app := NewApp(ml, nil, ms)
