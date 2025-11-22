@@ -93,15 +93,42 @@
   font-size: 16px;
 }
 
-.empty-message {
-  text-align: center;
-  font-size: 18px;
-  color: #666;
-  padding: 40px 0;
-}
-
 .loading {
   text-align: center;
   padding: 40px 0;
   font-size: 18px;
+}
+
+/* Стили для пустой корзины */
+.empty-cart {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.empty-cart-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-message {
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin-bottom: 2rem;
+}
+
+.continue-shopping {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  background-color: #4CAF50;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.continue-shopping:hover {
+  background-color: #0fb115;
 }

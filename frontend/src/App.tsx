@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { SmartphoneList } from './components/products/SmartphoneList';
 import { SmartphoneDetail } from './components/products/SmartphoneDetail';
@@ -11,6 +12,7 @@ import { Layout } from './components/Layout';
 import { NotFoundPage } from './components/NotFoundPage';
 function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <Router>
         <Layout>
@@ -47,6 +49,7 @@ function App() {
         </Layout>
       </Router>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 

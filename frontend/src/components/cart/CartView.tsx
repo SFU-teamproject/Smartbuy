@@ -5,6 +5,7 @@ import { getCartItems, updateCartItem, deleteCartItem, getSmartphoneById } from 
 import { CartItem, Smartphone } from '../../types';
 import './Cart.css'; 
 import { motion, AnimatePresence } from 'framer-motion'; // Для анимаций
+import { Link } from 'react-router-dom';
 
 export const CartView = () => {
   const { cart, token, refreshCart } = useAuth();
@@ -90,9 +91,13 @@ export const CartView = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="empty-message"
+            className="empty-cart"
           >
-            Ваша корзина пуста
+             <div className="empty-cart-icon">🛒</div>
+            <p className="empty-message">Ваша корзина пуста</p>
+            <Link to="/" className="continue-shopping">
+              Продолжить покупки
+            </Link>
           </motion.p>
         ) : (
           <>
@@ -106,6 +111,7 @@ export const CartView = () => {
                   exit={{ opacity: 0, x: -100 }}
                   transition={{ duration: 0.2 }}
                 >
+                  
                   <div className="item-info">
                     <div className="product-info">
                       <h3>{item.smartphone?.producer} {item.smartphone?.model || `Товар #${item.smartphone_id}`}</h3>

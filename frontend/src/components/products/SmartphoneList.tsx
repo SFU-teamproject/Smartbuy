@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { getSmartphones, getSmartphonesByIds } from '../../api/client';
 import { Smartphone } from '../../types';
 import './SmartphoneList.css'; 
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { addCartItem } from '../../api/client';
 import Pagination from './Pagination/Pagination';
@@ -15,6 +15,11 @@ export function SmartphoneList() {
   const [error, setError] = useState('');
   const [filteredIds, setFilteredIds] = useState<number[] | null>(null);
   const { user, token, refreshCart } = useAuth(); // Хук вызывается в начале компонента
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  // Получаем параметры фильтрации из URL
+  const producerFilter = searchParams.get('producer');
+  const priceFilter = searchParams.get('price');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -36,12 +41,46 @@ export function SmartphoneList() {
     fetchData();
   }, [filteredIds]);
 
+  // Функция для фильтрации смартфонов по производителю и цене
+  const getFilteredSmartphones = () => {
+    let filtered = smartphones;
+
+    // Фильтрация по производителю
+    if (producerFilter) {
+      filtered = filtered.filter(phone => 
+        phone.producer.toLowerCase().includes(producerFilter.toLowerCase())
+      );
+    }
+
+    // Фильтрация по цене
+    if (priceFilter) {
+      switch (priceFilter) {
+        case 'budget':
+          filtered = filtered.filter(phone => phone.price < 20000);
+          break;
+        case 'mid':
+          filtered = filtered.filter(phone => phone.price >= 20000 && phone.price <= 40000);
+          break;
+        case 'premium':
+          filtered = filtered.filter(phone => phone.price > 40000);
+          break;
+        default:
+          break;
+      }
+    }
+
+    return filtered;
+  };
+
   const handleShowPopular = () => {
     setFilteredIds([1, 3, 4]);
+     // Сбрасываем другие фильтры при активации популярных
+    setSearchParams({});
   };
 
   const handleResetFilter = () => {
     setFilteredIds(null);
+    setSearchParams({});
   };
 
   const handleAddToCart = async (smartphoneId: number) => {
@@ -49,7 +88,7 @@ export function SmartphoneList() {
     
     try {
       await addCartItem(user.cart.id, smartphoneId, token);
-      alert('Item added to cart!');
+      alert('Товар добавлен в корзину!');
       refreshCart();
     } catch (error) {
       console.error('Failed to add to cart:', error);
@@ -66,6 +105,9 @@ export function SmartphoneList() {
     return false;
   };
   
+   // Получаем отфильтрованные смартфоны
+  const filteredSmartphones = getFilteredSmartphones();
+
 
   const ITEMS_PER_PAGE = 8;
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -74,6 +116,10 @@ export function SmartphoneList() {
   const currentSmartphones = smartphones.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
+  // Сбрасываем страницу при изменении фильтров
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [producerFilter, priceFilter, filteredIds]);
 
   const handlePrevPage = () => {
     setCurrentPage((prev) => Math.max(prev - 1, 1));
@@ -87,6 +133,24 @@ export function SmartphoneList() {
     setCurrentPage(pageNumber);
   };
 
+  // Функция для отображения текущих фильтров
+  const getActiveFiltersInfo = () => {
+  const filters = [];
+  if (producerFilter) filters.push(`Производитель: ${producerFilter}`);
+  if (priceFilter) {
+    const priceLabels: Record<string, string> = {
+      budget: 'До 20 000 ₽',
+      mid: '20 000 - 40 000 ₽', 
+      premium: 'От 40 000 ₽'
+    };
+    filters.push(`Цена: ${priceLabels[priceFilter] || priceFilter}`);
+  }
+  if (filteredIds) filters.push('Популярные товары');
+  
+  return filters;
+};
+
+  const activeFilters = getActiveFiltersInfo();
 
   // Условный рендеринг после всех хуков
   if (loading) return <div className="loading">Loading...</div>;
@@ -94,8 +158,8 @@ export function SmartphoneList() {
 
   return (
     <div className="smartphone-list">
-      <h2>Our Smartphones</h2>
-      <div className="filter-controls">
+      <h2>Наши смартфоны</h2>
+       {/* <div className="filter-controls">
         <button onClick={handleShowPopular} className="filter-button">
           Show Popular (IDs: 1, 3, 4)
         </button>
@@ -106,7 +170,39 @@ export function SmartphoneList() {
         )}
       </div>
 
-      <div className="products-grid">
+      Информация о активных фильтрах */}
+      {activeFilters.length > 0 && (
+        <div className="active-filters">
+          <h3></h3>
+          <div className="filters-list">
+            {activeFilters.map((filter, index) => (
+              <span key={index} className="filter-tag">
+                {filter}
+              </span>
+            ))}
+            <button onClick={handleResetFilter} className="clear-filters">
+             X
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="filter-controls">
+        <button onClick={handleShowPopular} className="filter-button">
+          Показать популярные
+        </button>
+        {filteredIds && (
+          <button onClick={handleResetFilter} className="filter-button">
+            Показать все
+          </button>
+        )}
+      </div>
+
+      <div className="products-info">
+        <p>Найдено товаров: {filteredSmartphones.length}</p>
+      </div>
+
+       <div className="products-grid">
         {currentSmartphones.map((phone) => (
           <div key={phone.id} className="product-card">
             <img 
@@ -120,11 +216,11 @@ export function SmartphoneList() {
               </Link>
               <p>Память: {phone.memory}GB</p>
               <p>RAM: {phone.ram}GB</p>
-              <p className="price">{phone.price.toLocaleString('ru-RU')} </p>
+              <p className="price">{phone.price.toLocaleString('ru-RU')} ₽</p>
               <div className="rating">
                 Рейтинг: {phone.ratings_count > 0 
                   ? (phone.ratings_sum / phone.ratings_count).toFixed(1) 
-                  : 'No ratings'}
+                  : 'Нет оценок'}
               </div>
               <button 
                 onClick={() => handleAddToCart(phone.id)} 
@@ -137,13 +233,25 @@ export function SmartphoneList() {
           </div>
         ))}
       </div>
-      <Pagination
-      currentPage={currentPage}
-      totalPages={totalPages}
-      onPageChange={handlePageClick}
-      onPrevPage={handlePrevPage}
-      onNextPage={handleNextPage}
-      />
+
+      {filteredSmartphones.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageClick}
+          onPrevPage={handlePrevPage}
+          onNextPage={handleNextPage}
+        />
+      )}
+
+      {filteredSmartphones.length === 0 && !loading && (
+        <div className="no-products">
+          <h3>Товары не найдены</h3>
+          <button onClick={handleResetFilter} className="filter-button">
+            Показать все товары
+          </button>
+        </div>
+      )}
     </div>
   );
 }

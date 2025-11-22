@@ -10,7 +10,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    background-color: #2c3e50;
+    background-color: var(--bg-secondary); /*background-color: #2c3e50;*/
     color: white;
   }
   
@@ -50,7 +50,12 @@
   .logout-btn:hover {
     background: rgba(255, 255, 255, 0.1);
   }
-  
+  /* Новый макет с сайдбаром */
+.main-layout {
+  display: flex;
+  flex: 1;
+  background-color: var(--bg-primary);
+}
   .app-content {
     flex: 1;
     padding: 2rem;

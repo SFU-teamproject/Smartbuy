@@ -130,3 +130,66 @@
   font-weight: bold;
   margin: 4px;
 }
+/* Стили для активных фильтров */
+.active-filters {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #495057;
+}
+
+.active-filters h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: #495057;
+}
+
+.filters-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-tag {
+  background-color: #b9c8d1;
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 16px;
+  font-size: 0.9rem;
+}
+
+.clear-filters {
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.clear-filters:hover {
+  background-color: #c0392b;
+}
+
+.products-info {
+  margin: 1rem 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.no-products {
+  text-align: center;
+  padding: 3rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.no-products h3 {
+  color: #6c757d;
+  margin-bottom: 1rem;
+}
