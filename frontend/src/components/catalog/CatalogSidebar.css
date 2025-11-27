@@ -1,4 +1,4 @@
-.catalog-sidebar {
+/*.catalog-sidebar {
   width: 280px;
   background-color:var(--bg-primary);
   border-right: 1px solid #e9ecef;
@@ -56,7 +56,7 @@
   font-weight: bold;
 }
 
-/* Дополнительные фильтры */
+/* Дополнительные фильтры *//*
 .additional-filters {
   margin-top: 2rem;
   padding-top: 1.5rem;
@@ -91,7 +91,7 @@
   color: #495057;
 }
 
-/* Адаптивность */
+/* Адаптивность *//*
 @media (max-width: 1024px) {
   .catalog-sidebar {
     width: 250px;
@@ -105,5 +105,121 @@
     position: static;
     border-right: none;
     border-bottom: 1px solid #e9ecef;
+  }
+}*/
+/* src/components/catalog/CatalogSidebar.css */
+.catalog-sidebar {
+  width: 280px;
+  background-color: var(--bg-surface);
+  border-right: 1px solid var(--divider);
+  padding: 1.5rem;
+  height: calc(100vh - 64px);
+  position: sticky;
+  top: 64px;
+  overflow-y: auto;
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.catalog-title {
+  margin: 0 0 1.5rem 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-main);
+}
+
+.producers-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.producer-item {
+  margin-bottom: 0.25rem;
+}
+
+.producer-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+}
+
+.producer-link:hover {
+  background-color: var(--primary-main);
+  color: var(--text-primary);
+  border-color: var(--primary-main);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.producer-name {
+  font-weight: 500;
+}
+
+.producer-arrow {
+  font-size: 1.2rem;
+  font-weight: bold;
+  opacity: 0.7;
+}
+
+/* Дополнительные фильтры */
+.additional-filters {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--divider);
+}
+
+.additional-filters h4 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-link {
+  padding: 0.75rem 1rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  border: 1px solid transparent;
+  background-color: var(--bg-card);
+}
+
+.filter-link:hover {
+  background-color: var(--primary-main);
+  color: var(--text-primary);
+  border-color: var(--primary-main);
+}
+
+/* Адаптивность */
+@media (max-width: 1024px) {
+  .catalog-sidebar {
+    width: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .catalog-sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--divider);
   }
 }

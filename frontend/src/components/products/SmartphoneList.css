@@ -1,4 +1,5 @@
 /* src/components/SmartphoneList.css */
+/*
 .smartphone-list {
     padding: 20px;
   }
@@ -50,15 +51,15 @@
     margin: 8px 0;
   }
   
-  .add-to-cart {
+  /*.add-to-cart {
     background-color: #f0c14b;
     border: 1px solid #a88734;
     padding: 8px 15px;
     border-radius: 3px;
     cursor: pointer;
     width: 100%;
-  }
-  
+  }*/
+  /*
   .loading, .error {
     text-align: center;
     padding: 40px;
@@ -79,14 +80,14 @@
     text-decoration: underline;
   }
 
-  /* Стили для блока фильтрации */
+  /* Стили для блока фильтрации *//*
 .filter-controls {
   margin: 20px 0;
   display: flex;
   gap: 10px;
 }
 
-.filter-button {
+/*.filter-button {
   padding: 8px 16px;
   background: #f0c14b;
   border: 1px solid #a88734;
@@ -97,6 +98,51 @@
 
 .filter-button:hover {
   background: #ddb347;
+}
+*/
+/* В SmartphoneList.css обновите стили кнопок *//*
+.filter-button {
+  background-color: var(--primary-main);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.filter-button:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-elevation-2);
+}
+
+.add-to-cart {
+  background-color: var(--primary-main);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.add-to-cart:hover:not(:disabled) {
+  background-color: var(--primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.add-to-cart:disabled {
+  background-color: var(--action-disabled-bg);
+  color: var(--action-disabled);
+  cursor: not-allowed;
+  transform: none;
 }
 .price {
   font-weight: bold;
@@ -130,7 +176,7 @@
   font-weight: bold;
   margin: 4px;
 }
-/* Стили для активных фильтров */
+/* Стили для активных фильтров *//*
 .active-filters {
   margin: 1rem 0;
   padding: 1rem;
@@ -192,4 +238,446 @@
 .no-products h3 {
   color: #6c757d;
   margin-bottom: 1rem;
+}*/
+/* src/components/products/SmartphoneList.css */
+.smartphone-list {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.smartphone-list h2 {
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+.product-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-shadow: var(--shadow-elevation-1);
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--primary-main), var(--primary-light));
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-elevation-3);
+  border-color: var(--primary-main);
+}
+
+.product-card:hover::before {
+  transform: scaleX(1);
+}
+
+.product-image-container {
+  position: relative;
+  margin-bottom: 1rem;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: var(--bg-secondary);
+  padding: 1rem;
+}
+
+.product-image {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.product-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.product-link {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
+  margin-bottom: 0.75rem;
+  margin-top:  0.75rem;
+}
+
+.product-link h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.7rem;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.product-link:hover h3 {
+  color: var(--primary-main);
+}
+
+.product-info h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 1.4;
+  min-height: 2.8rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.product-specs p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.product-specs p span {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.price {
+  font-weight: 700;
+  color: var(--primary-main);
+  font-size: 1.4rem;
+  margin: 0.5rem 0;
+  text-align: center;
+  background: linear-gradient(135deg, var(--primary-main), var(--primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
+  justify-content: center;
+}
+
+.rating::before {
+  content: '⭐';
+  font-size: 1rem;
+}
+
+.rating-value {
+  color: var(--warning-main);
+  font-weight: 600;
+}
+
+/* Контейнер для кнопки, прижатый к низу */
+.product-actions {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+.add-to-cart {
+  
+  background: linear-gradient(135deg, var(--primary-main), var(--primary-dark));
+  color: var(--text-primary);
+  border: none;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-top: auto;
+  box-shadow: var(--shadow-elevation-1);
+  position: relative;
+  overflow: hidden;
+}
+
+.add-to-cart::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.add-to-cart:hover::before {
+  left: 100%;
+}
+
+.add-to-cart:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevation-2);
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary-main));
+}
+
+.add-to-cart:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.add-to-cart:disabled {
+  background: var(--action-disabled-bg);
+  color: var(--action-disabled);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Стили для фильтров и управления */
+.filter-controls {
+  margin: 1.5rem 0;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filter-button {
+  background: var(--primary-main);
+  color: var(--text-primary);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-elevation-1);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 0.875rem;
+}
+
+.filter-button:hover {
+  background: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-elevation-2);
+}
+
+/* Стили для активных фильтров */
+.active-filters {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  border-left: 4px solid var(--primary-main);
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.active-filters h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.filters-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.filter-tag {
+  background: linear-gradient(135deg, var(--primary-main), var(--primary-dark));
+  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.clear-filters {
+  background: var(--error-main);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clear-filters:hover {
+  background: #c0392b;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.products-info {
+  margin: 1rem 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.no-products {
+  text-align: center;
+  padding: 3rem;
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  margin: 2rem 0;
+  border: 2px dashed var(--border-color);
+}
+
+.no-products h3 {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.no-products p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+/* Состояния загрузки и ошибок */
+.loading, .error {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.loading {
+  color: var(--text-secondary);
+  background-color: var(--bg-secondary);
+}
+
+.error {
+  color: var(--error-main);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--error-main);
+}
+
+/* Пагинация */
+.pagination-wrapper {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.pagination-container {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+  background-color: var(--bg-card);
+  padding: 0.75rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-elevation-1);
+}
+
+.pagination-item {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.pagination-item:hover:not(.pagination-item-active) {
+  background-color: var(--action-hover);
+  border-color: var(--primary-main);
+}
+
+.pagination-item-active {
+  background: linear-gradient(135deg, var(--primary-main), var(--primary-dark));
+  color: var(--text-primary);
+  border: 1px solid var(--primary-main);
+  font-weight: 600;
+  box-shadow: var(--shadow-elevation-1);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .smartphone-list {
+    padding: 1rem;
+  }
+  
+  .products-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+  
+  .product-card {
+    padding: 1rem;
+  }
+  
+  .filter-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filter-button {
+    text-align: center;
+  }
+  
+  .filters-list {
+    justify-content: center;
+  }
+  
+  .product-info h3 {
+    font-size: 1rem;
+    min-height: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .products-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .product-image {
+    height: 180px;
+  }
 }

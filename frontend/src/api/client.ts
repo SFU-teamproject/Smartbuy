@@ -1,4 +1,16 @@
-import { Smartphone, ApiError, SignupData, AuthResponse, LoginData, User, CartItem, Cart } from '../types';
+import { 
+  Smartphone, 
+  ApiError, 
+  SignupData, 
+  AuthResponse, 
+  LoginData,
+  User, 
+  CartItem, 
+  Cart,
+  Order,
+  CreateOrderData 
+} from '../types';
+import { mockOrders } from './mockOrders'; // Импортируем моковые данные для странички заказов
 
 const API_BASE_URL = '/api/v1';
 
@@ -104,3 +116,98 @@ export const deleteCartItem = (cartId: number, itemId: number, token: string): P
     method: 'DELETE',
     headers: { Authorization: `Bearer ${token}` }
   });
+
+  // api методы для заказов
+export const createOrder = (data: CreateOrderData, token: string): Promise<Order> =>
+ /* apiClient<Order>('/orders', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(data)
+  });*/
+   // Для демонстрации создаем моковый заказ
+  { const newOrder: Order = {
+    id: Math.max(...mockOrders.map(o => o.id)) + 1,
+    user_id: data.user_id,
+    status: 'pending',
+    total_amount: data.items.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    items: data.items.map((item, index) => ({
+      id: Math.max(...mockOrders.flatMap(o => o.items.map(i => i.id))) + index + 1,
+      order_id: Math.max(...mockOrders.map(o => o.id)) + 1,
+      smartphone_id: item.smartphone_id,
+      quantity: item.quantity,
+      price: item.price,
+      // Здесь можно добавить smartphone данные, если нужно
+    }))
+  };
+  
+  // В реальном приложении здесь был бы API вызов:
+  // return apiClient<Order>('/orders', {
+  //   method: 'POST',
+  //   headers: { Authorization: `Bearer ${token}` },
+  //   body: JSON.stringify(data)
+  // });
+  
+  // Для демо возвращаем моковый заказ
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(newOrder), 500); // Имитация задержки сети
+  });
+};
+
+
+export const getOrders = (token: string): Promise<Order[]> =>
+ /* apiClient<Order[]>('/orders', {
+    headers: { Authorization: `Bearer ${token}` }
+  });*/
+  {
+  // В реальном приложении:
+  // return apiClient<Order[]>('/orders', {
+  //   headers: { Authorization: `Bearer ${token}` }
+  // });
+  
+  // Для демо возвращаем моковые заказы
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(mockOrders), 500);
+  });
+};
+
+
+export const getOrderById = (orderId: number, token: string): Promise<Order> =>
+ /* apiClient<Order>(`/orders/${orderId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });*/
+  {
+  // В реальном приложении:
+  // return apiClient<Order>(`/orders/${orderId}`, {
+  //   headers: { Authorization: `Bearer ${token}` }
+  // });
+  
+  // Для демо находим заказ в моковых данных
+  const order = mockOrders.find(o => o.id === orderId);
+  if (!order) {
+    throw new Error('Order not found');
+  }
+  
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(order), 300);
+  });
+};
+
+export const cancelOrder = (orderId: number, token: string): Promise<void> =>
+  /*apiClient<void>(`/orders/${orderId}/cancel`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` }
+  });*/
+   {
+  // В реальном приложении:
+  // return apiClient<void>(`/orders/${orderId}/cancel`, {
+  //   method: 'POST',
+  //   headers: { Authorization: `Bearer ${token}` }
+  // });
+  
+  // Для демо просто возвращаем успех
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(), 500);
+  });
+};

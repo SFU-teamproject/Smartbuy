@@ -52,3 +52,31 @@ export interface LoginData {
 }
 
 export interface SignupData extends LoginData {}
+
+export interface Order {
+  id: number;
+  user_id: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  total_amount: number;
+  created_at: string;
+  updated_at: string;
+  items: OrderItem[];
+}
+
+export interface OrderItem {
+  id: number;
+  order_id: number;
+  smartphone_id: number;
+  quantity: number;
+  price: number;
+  smartphone?: Smartphone;
+}
+
+export interface CreateOrderData {
+  user_id: number;
+  items: {
+    smartphone_id: number;
+    quantity: number;
+    price: number;
+  }[];
+}

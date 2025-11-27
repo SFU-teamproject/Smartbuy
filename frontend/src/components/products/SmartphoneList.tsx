@@ -111,9 +111,11 @@ export function SmartphoneList() {
 
   const ITEMS_PER_PAGE = 8;
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const totalPages = Math.ceil(smartphones.length / ITEMS_PER_PAGE);
+  //const totalPages = Math.ceil(smartphones.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(filteredSmartphones.length / ITEMS_PER_PAGE); // Исправлено: используем filteredSmartphones
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const currentSmartphones = smartphones.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  //const currentSmartphones = smartphones.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const currentSmartphones = filteredSmartphones.slice(startIndex, startIndex + ITEMS_PER_PAGE); // Исправлено: используем filteredSmartphones
   const pageNumbers = Array.from({ length: totalPages }, (_, index) => index + 1);
 
   // Сбрасываем страницу при изменении фильтров
@@ -152,9 +154,9 @@ export function SmartphoneList() {
 
   const activeFilters = getActiveFiltersInfo();
 
-  // Условный рендеринг после всех хуков
-  if (loading) return <div className="loading">Loading...</div>;
-  if (error) return <div className="error">Error: {error}</div>;
+   // Условный рендеринг после всех хуков
+  if (loading) return <div className="loading">Загрузка...</div>;
+  if (error) return <div className="error">Ошибка: {error}</div>;
 
   return (
     <div className="smartphone-list">
@@ -170,7 +172,7 @@ export function SmartphoneList() {
         )}
       </div>
 
-      Информация о активных фильтрах */}
+      Информация о активных фильтрах
       {activeFilters.length > 0 && (
         <div className="active-filters">
           <h3></h3>
@@ -185,7 +187,41 @@ export function SmartphoneList() {
             </button>
           </div>
         </div>
-      )}
+      )}  */}
+      {/* {/* Информация о активных фильтрах расширенная*/}{/*
+      {activeFilters.length > 0 && (
+        <div className="active-filters">
+          <div className="filters-header">
+            <span className="filters-title">Активные фильтры:</span>
+            <button onClick={handleResetFilter} className="clear-all-filters">
+              Очистить все
+            </button>
+          </div>
+          <div className="filters-list">
+            {activeFilters.map((filter, index) => (
+              <div key={index} className="filter-tag">
+                <span className="filter-text">{filter}</span>
+                <button 
+                  onClick={() => {
+                    // Удаляем конкретный фильтр
+                    if (filter.includes('Производитель')) {
+                      searchParams.delete('producer');
+                    } else if (filter.includes('Цена')) {
+                      searchParams.delete('price');
+                    } else if (filter.includes('Популярные')) {
+                      setFilteredIds(null);
+                    }
+                    setSearchParams(searchParams);
+                  }}
+                  className="remove-filter"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}*/}
 
       <div className="filter-controls">
         <button onClick={handleShowPopular} className="filter-button">
@@ -201,7 +237,7 @@ export function SmartphoneList() {
       <div className="products-info">
         <p>Найдено товаров: {filteredSmartphones.length}</p>
       </div>
-
+         {/* Основной контент */}
        <div className="products-grid">
         {currentSmartphones.map((phone) => (
           <div key={phone.id} className="product-card">
@@ -214,8 +250,10 @@ export function SmartphoneList() {
               <Link to={`/smartphones/${phone.id}`} className="product-link">
                 <h3>{phone.producer} {phone.model}</h3>
               </Link>
-              <p>Память: {phone.memory}GB</p>
-              <p>RAM: {phone.ram}GB</p>
+              <div className="product-specs">
+                <p>Память: {phone.memory}GB</p>
+                <p>RAM: {phone.ram}GB</p>
+               </div>
               <p className="price">{phone.price.toLocaleString('ru-RU')} ₽</p>
               <div className="rating">
                 Рейтинг: {phone.ratings_count > 0 
@@ -243,7 +281,7 @@ export function SmartphoneList() {
           onNextPage={handleNextPage}
         />
       )}
-
+      
       {filteredSmartphones.length === 0 && !loading && (
         <div className="no-products">
           <h3>Товары не найдены</h3>
