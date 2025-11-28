@@ -111,12 +111,32 @@ export const CartView = () => {
                   exit={{ opacity: 0, x: -100 }}
                   transition={{ duration: 0.2 }}
                 >
-                  
+                   {/* Миниатюра товара */}
+                  <div className="item-image">
+                    <Link to={`/smartphones/${item.smartphone_id}`}>
+                      <img 
+                        src={item.smartphone?.image_path || '/placeholder-phone.jpg'} 
+                        alt={item.smartphone?.model || 'Товар'}
+                        className="product-thumbnail"
+                      />
+                    </Link>
+                  </div>
+                    <div className="item-content">
+                   {/* Название товара */}
+                    <div className="product-info">
+                      <Link 
+                        to={`/smartphones/${item.smartphone_id}`}
+                        className="product-link"
+                      >
+                        <h3>{item.smartphone?.producer} {item.smartphone?.model || `Товар #${item.smartphone_id}`}</h3>
+                      </Link>
+                    </div>
+                 {/*
                   <div className="item-info">
                     <div className="product-info">
                       <h3>{item.smartphone?.producer} {item.smartphone?.model || `Товар #${item.smartphone_id}`}</h3>
                       <p className="price">{item.smartphone?.price ? `${item.smartphone.price.toLocaleString('ru-RU')}` : 'Цена не указана'}</p>
-                    </div>
+                    </div>*/}
                     
                     <div className="quantity-controls">
                       <button 
