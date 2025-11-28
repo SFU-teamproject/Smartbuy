@@ -2,26 +2,231 @@
 .smartphone-detail {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 2rem;
+    background-color: var(--bg-primary);
   }
-  
-  .detail-container {
-    display: flex;
-    gap: 30px;
-    margin-bottom: 40px;
-  }
-  
+  /* Хлебные крошки */
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.breadcrumb-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--primary-main);
+}
+
+.breadcrumb-separator {
+  color: var(--text-disabled);
+  font-size: 0.9rem;
+}
+
+.breadcrumb-current {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+  /* Основной контейнер */
+.detail-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 3rem;
+}
+  /* Секция изображения */
+.image-section {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
   .detail-image {
-    width: 400px;
-    height: auto;
-    object-fit: contain;
-    border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  background-color: var(--bg-secondary);
+  padding: 2rem;
+  box-shadow: var(--shadow-elevation-1);
+  border: 1px solid var(--border-light);
+}
+  
+ /* Секция информации */
+.detail-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+  /* Секция цены */
+.price-section {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.price {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-main); /* e63946*/
+}
+/* Сетка характеристик */
+.specs-grid {
+  display: grid;
+  grid-template-columns: 1fr ;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+.spec-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+}
+
+.spec-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.spec-value {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* Секция описания */
+.description-section {
+  background-color: var(--bg-card);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow-elevation-1);
+  border: 1px solid var(--border-light);
+  margin-left: 3rem;
+}
+.description-title {
+  margin: 0 0 1.5rem 0;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-main);
+}
+.description-content {
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 1rem;
+}
+
+.description-content p {
+  margin: 0;
+}
+
+/* Состояния загрузки и ошибок */
+.loading {
+  text-align: center;
+  padding: 4rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+.error {
+  text-align: center;
+  padding: 3rem;
+  color: var(--error-main);
+  background-color: var(--bg-secondary);
+  border-radius: 12px;
+  margin: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.not-found {
+  text-align: center;
+  padding: 4rem;
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+/* Адаптивность */
+@media (max-width: 968px) {
+  .detail-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  .image-section {
+    order: 1;
   }
   
   .detail-info {
-    flex: 1;
+    order: 2;
   }
   
+  .product-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .specs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .smartphone-detail {
+    padding: 1rem;
+  }
+  
+  .product-title {
+    font-size: 1.75rem;
+  }
+  
+  .price {
+    font-size: 2rem;
+  }
+  
+  .detail-image {
+    padding: 1rem;
+  }
+  
+  .description-section {
+    padding: 1.5rem;
+  }
+  
+  .breadcrumbs {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .add-to-cart {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .price {
+    font-size: 1.75rem;
+  }
+  
+  .product-title {
+    font-size: 1.5rem;
+  }
+}
+/*
   .specs {
     margin: 20px 0;
   }
@@ -41,4 +246,4 @@
     background: #f8f9fa;
     padding: 20px;
     border-radius: 8px;
-  }
+  }*/
