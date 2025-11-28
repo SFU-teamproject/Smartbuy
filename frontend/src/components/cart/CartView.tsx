@@ -184,7 +184,7 @@ export const CartView = () => {
               transition={{ delay: 0.1 }}
             >
               <h3>Итого: {total.toLocaleString()} ₽</h3>
-              <button className="checkout-btn">Оформить заказ</button>
+              <Link to="/payment" className="nav-link"><button className="checkout-btn">Оформить заказ</button></Link>
             </motion.div>
           </>
         )}

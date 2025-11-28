@@ -80,3 +80,51 @@ export interface CreateOrderData {
     price: number;
   }[];
 }
+
+/* merge */
+
+export interface Review {
+  id: number;
+  smartphone_id: number;
+  user_id: number;
+  user_name?: string; //Поле user_name присутствует только при GET всех отзывов по айди смартфона, в остальных отсутствует.
+  rating: number;
+  comment?: string; //Поле comment может отсутствовать
+  created_at: Date;
+  updated_at?: Date;
+}
+
+export interface ReviewForAdd {
+  rating: number;
+  comment?: string; //Поле comment может отсутствовать
+}
+
+export interface ReviewForUpdate {
+  id: number;
+  rating: number;
+  comment?: string; //Поле comment может отсутствовать
+}
+
+export interface Payment {
+  phone: string;
+  delivery_type: DeliveryType;
+  address?: Address;
+  payment_type?: PaymentType;
+}
+
+export interface Address {
+  city: string;
+  street: string;
+  house: number;
+}
+
+export enum DeliveryType {
+  delivery_self = "delivery_self",
+  delivery_courier = "delivery_courier"
+}
+
+export enum PaymentType {
+  payment_cart = "payment_cart",
+  payment_courier = "payment_courier",
+  payment_self = "payment_self"
+}

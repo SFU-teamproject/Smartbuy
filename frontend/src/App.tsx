@@ -10,6 +10,10 @@ import { LoginForm } from './components/auth/LoginForm';
 import { SignupForm } from './components/auth/SignupForm';
 import { Layout } from './components/Layout';
 import { NotFoundPage } from './components/NotFoundPage';
+import { ProtectedCartRoute } from './components/cart/ProtectedCartRoute';
+import { PaymentView } from './components/cart/PaymentView';
+import { BankView } from './components/cart/BankView';
+import { SuccessView } from './components/cart/SuccessView';
 function App() {
   return (
     <ThemeProvider>
@@ -41,6 +45,28 @@ function App() {
             <Route path="/cart" element={
               <ProtectedRoute>
                 <CartView />
+              </ProtectedRoute>
+            } />
+
+             <Route path="/payment" element={
+              <ProtectedRoute>
+                <ProtectedCartRoute>
+                  <PaymentView />
+                </ProtectedCartRoute>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/bank" element={
+              <ProtectedRoute>
+                <ProtectedCartRoute>
+                  <BankView />
+                </ProtectedCartRoute>
+              </ProtectedRoute>
+            } />
+
+            <Route path="/success" element={
+              <ProtectedRoute>
+                <SuccessView />
               </ProtectedRoute>
             } />
 
