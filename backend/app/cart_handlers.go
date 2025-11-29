@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 )
 
@@ -22,11 +23,11 @@ func (app *App) GetCart(w http.ResponseWriter, r *http.Request) {
 	}
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	if cart.UserID != userID && role != models.RoleAdmin {
-		app.ErrorJSON(w, r, errForbidden)
+		app.ErrorJSON(w, r, apperrors.ErrForbidden)
 		return
 	}
 	cartItems, err := app.DB.GetCartItems(cart.ID)
@@ -46,12 +47,12 @@ func (app *App) GetCarts(w http.ResponseWriter, r *http.Request) {
 	}
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	if role != models.RoleAdmin {
 		app.ErrorJSON(w, r, fmt.Errorf("%w: user %d (role %s) does not have required role",
-			errForbidden, userID, role))
+			apperrors.ErrForbidden, userID, role))
 		return
 	}
 	carts, err := app.DB.GetCarts()
@@ -66,16 +67,16 @@ func (app *App) GetCartByUserID(w http.ResponseWriter, r *http.Request) {
 	userIDStr := r.URL.Query().Get("user_id")
 	pUserID, err := strconv.Atoi(userIDStr)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: incorrect user id(%s): %w", errBadRequest, userIDStr, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: incorrect user id(%s): %w", apperrors.ErrBadRequest, userIDStr, err))
 		return
 	}
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	if pUserID != userID && role != models.RoleAdmin {
-		app.ErrorJSON(w, r, errForbidden)
+		app.ErrorJSON(w, r, apperrors.ErrForbidden)
 		return
 	}
 	cart, err := app.DB.GetCartByUserID(pUserID)
@@ -105,11 +106,11 @@ func (app *App) GetCartItems(w http.ResponseWriter, r *http.Request) {
 	}
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	if userID != cart.UserID && role != models.RoleAdmin {
-		app.ErrorJSON(w, r, errForbidden)
+		app.ErrorJSON(w, r, apperrors.ErrForbidden)
 		return
 	}
 	cartItems, err := app.DB.GetCartItems(cartID)
@@ -133,17 +134,17 @@ func (app *App) AddToCart(w http.ResponseWriter, r *http.Request) {
 	}
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	if userID != cart.UserID && role != models.RoleAdmin {
-		app.ErrorJSON(w, r, errForbidden)
+		app.ErrorJSON(w, r, apperrors.ErrForbidden)
 		return
 	}
 	var cartItem models.CartItem
 	err = json.NewDecoder(r.Body).Decode(&cartItem)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding cartItem: %w", errBadRequest, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding cartItem: %w", apperrors.ErrBadRequest, err))
 		return
 	}
 	cartItem.CartID = cartID
@@ -174,17 +175,17 @@ func (app *App) SetQuantity(w http.ResponseWriter, r *http.Request) {
 	}
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	if userID != cart.UserID && role != models.RoleAdmin {
-		app.ErrorJSON(w, r, errForbidden)
+		app.ErrorJSON(w, r, apperrors.ErrForbidden)
 		return
 	}
 	var cartItem models.CartItem
 	err = json.NewDecoder(r.Body).Decode(&cartItem)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding quantity: %w", errBadRequest, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding quantity: %w", apperrors.ErrBadRequest, err))
 		return
 	}
 	cartItem.ID = itemID
@@ -215,11 +216,11 @@ func (app *App) DeleteFromCart(w http.ResponseWriter, r *http.Request) {
 	}
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
-		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", errUnauthorized, err))
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
 	if userID != cart.UserID && role != models.RoleAdmin {
-		app.ErrorJSON(w, r, errForbidden)
+		app.ErrorJSON(w, r, apperrors.ErrForbidden)
 		return
 	}
 	cartItem, err := app.DB.DeleteFromCart(cartID, itemID)

@@ -98,11 +98,11 @@ SELECT setval(pg_get_serial_sequence('cart_items', 'id'), coalesce(max(id),0) + 
 
 delete from users;
 SELECT setval(pg_get_serial_sequence('users', 'id'), coalesce(max(id),0) + 1, false) FROM users;
-insert into users (name, password, role)
+insert into users (name, email, password, role)
 values
-    ('admin', '$2a$10$4ntk1IwmZXCKR/QGp9cZU.2JVvqYWwM9uyxKlC7pPR5suRlf4Bkx.', 'admin'),
-    ('user1', '$2a$10$f9sCd/oZg9GriPoHVrHMT.4KIr6dOwmQbU5FDCQdYgxYm3Xc6pQqa', 'user'),
-    ('user2', '$2a$10$FKAxhcBTV9/yZbNk9OhbpeDrW5RMSrNFKT8w1OHGENR.sV.kqgUEi', 'user');
+    ('admin', 'admin@example.com', '$2a$10$4ntk1IwmZXCKR/QGp9cZU.2JVvqYWwM9uyxKlC7pPR5suRlf4Bkx.', 'admin'),
+    ('user1', 'user1@example.com', '$2a$10$f9sCd/oZg9GriPoHVrHMT.4KIr6dOwmQbU5FDCQdYgxYm3Xc6pQqa', 'user'),
+    ('user2', 'user2@example.com', '$2a$10$FKAxhcBTV9/yZbNk9OhbpeDrW5RMSrNFKT8w1OHGENR.sV.kqgUEi', 'user');
 
 insert into cart_items (cart_id, smartphone_id)
 values

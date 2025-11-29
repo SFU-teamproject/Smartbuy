@@ -8,19 +8,19 @@ GET http://localhost:8081/api/v1/smartphones/1
 
 ###
 GET http://localhost:8081/api/v1/users
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NDI3NDMxMDYsImlhdCI6MTc0MjY1NjcwNn0.3fuXI9A5LsMPabSww1ztLDBF33_4IfY11EDXSdN_3Wg
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NjQ0OTEzNjIsImlhdCI6MTc2NDQwNDk2Mn0.5OT2QKy7AtlJhkg4GZZc2QGnV465OrNV9nw6nUCMYXU
 
 ###
 GET http://localhost:8081/api/v1/users/1
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NDI3NDMxMDYsImlhdCI6MTc0MjY1NjcwNn0.3fuXI9A5LsMPabSww1ztLDBF33_4IfY11EDXSdN_3Wg
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImlzcyI6IlNtYXJ0YnV5Iiwic3ViIjoiNSIsImV4cCI6MTc2NDQ4OTY1MSwiaWF0IjoxNzY0NDAzMjUxfQ.hueDu97bmrS4J0ny2SIE57cTo8yw_P-PXcp3HoYFeqw
 
 ###
 POST http://localhost:8081/api/v1/signup
 Content-Type: application/json
 
 {
-    "name": "user3",
-    "password": "user3"
+    "name": "",
+    "email": ""
 }
 
 ###
@@ -28,13 +28,32 @@ POST http://localhost:8081/api/v1/login
 Content-Type: application/json
 
 {
-    "name": "admin",
+    "email": "admin@example.com",
     "password": "admin"
 }
 
 ###
-GET http://localhost:8081/api/v1/carts
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYWRtaW4iLCJpc3MiOiJTbWFydGJ1eSIsInN1YiI6IjEiLCJleHAiOjE3NDI3NzUxNzMsImlhdCI6MTc0MjY4ODc3M30.KYEmpxmQE2hF15cjyR9BXp_9LHSn0hanluHVPWMkSaA
+
+POST http://localhost:8081/api/v1/users/restore
+Content-Type: application/json
+
+{
+    "email": ""
+}
+
+###
+PATCH http://localhost:8081/api/v1/login
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImlzcyI6IlNtYXJ0YnV5Iiwic3ViIjoiNSIsImV4cCI6MTc2NDQ4OTY1MSwiaWF0IjoxNzY0NDAzMjUxfQ.hueDu97bmrS4J0ny2SIE57cTo8yw_P-PXcp3HoYFeqw
+
+###
+PATCH http://localhost:8081/api/v1/users/1
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoidXNlciIsImlzcyI6IlNtYXJ0YnV5Iiwic3ViIjoiNSIsImV4cCI6MTc2NDQ4OTY1MSwiaWF0IjoxNzY0NDAzMjUxfQ.hueDu97bmrS4J0ny2SIE57cTo8yw_P-PXcp3HoYFeqw
+
+{
+    "avatar": null,
+    "name": "",
+    "password": ""
+}
 
 ###
 GET http://localhost:8081/api/v1/carts/1

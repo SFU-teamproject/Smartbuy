@@ -14,6 +14,8 @@ func (app *App) NewRouter() http.Handler {
 	router.HandleFunc("GET /api/v1/users/{user_id}", app.Auth(app.GetUser))
 	router.HandleFunc("POST /api/v1/login", app.Login)
 	router.HandleFunc("POST /api/v1/signup", app.Signup)
+	router.HandleFunc("PATCH /api/v1/users/{user_id}", app.Auth(app.UpdateUser))
+	router.HandleFunc("POST /api/v1/users/restore", app.SendTmpPassword)
 
 	router.HandleFunc("GET /api/v1/smartphones/{smartphone_id}/reviews", app.GetReviews)
 	router.HandleFunc("GET /api/v1/smartphones/{smartphone_id}/reviews/{review_id}", app.GetReview)

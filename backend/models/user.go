@@ -7,21 +7,44 @@ import (
 	"time"
 )
 
+type User struct {
+	ID        int       `json:"id"`
+	Name      string    `json:"name"`
+	Email     string    `json:"email"`
+	Avatar    *string   `json:"avatar"`
+	Password  *string   `json:"-"`
+	Role      Role      `json:"role"`
+	CreatedAt time.Time `json:"created_at"`
+	Cart      Cart      `json:"cart,omitzero"`
+}
+
+type SignUpRequest struct {
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	User  User   `json:"user"`
+	Token string `json:"token"`
+}
+
+type UpdateRequest struct {
+	Name     string `json:"name"`
+	Avatar   string `json:"avatar"`
+	Password string `json:"password"`
+}
+
 type Role string
 
 const (
 	RoleAdmin = "admin"
 	RoleUser  = "user"
 )
-
-type User struct {
-	ID        int       `json:"id"`
-	Name      string    `json:"name"`
-	Password  string    `json:"password,omitzero"`
-	Role      Role      `json:"role"`
-	CreatedAt time.Time `json:"created_at"`
-	Cart      Cart      `json:"cart,omitzero"`
-}
 
 func (r *Role) isValid() bool {
 	return *r == RoleUser || *r == RoleAdmin
