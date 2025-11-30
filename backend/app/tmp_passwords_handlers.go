@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/smtp"
+	"os"
 	"strings"
 	"time"
 
@@ -21,8 +22,6 @@ import (
 // @Tags         auth
 // @Security     BearerAuth
 // @Accept       json
-// @Produce      json
-// @Param        smartphone_id path int true "Smartphone ID"
 // @Param        email body models.TmpRequest true "Email of a user"
 // @Success      204
 // @Router       /users/restore [post]
@@ -78,7 +77,7 @@ func GenerateTmpPassword() (models.TmpPassword, error) {
 func SendTmpPassword(tmpPassword models.TmpPassword) error {
 	smtpHost := "smtp.mail.ru"
 	from := "smartbuy.store@mail.ru"
-	password := "qUuejB1p8REw83xShQDP"
+	password := os.Getenv("SMTP_PASSWORD")
 	smtpPort := "465"
 	subject := "Smartbuy temporary password"
 	body := "Ваш одноразовый пароль для входа в систему: " + tmpPassword.Password +

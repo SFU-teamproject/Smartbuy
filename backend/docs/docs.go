@@ -811,21 +811,11 @@ const docTemplate = `{
                 "consumes": [
                     "application/json"
                 ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
                     "auth"
                 ],
                 "summary": "Creates a temporary password for a user with a certain email, saves it to a database and sends to the user",
                 "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Smartphone ID",
-                        "name": "smartphone_id",
-                        "in": "path",
-                        "required": true
-                    },
                     {
                         "description": "Email of a user",
                         "name": "email",

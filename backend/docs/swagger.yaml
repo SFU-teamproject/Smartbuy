@@ -771,19 +771,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Smartphone ID
-        in: path
-        name: smartphone_id
-        required: true
-        type: integer
       - description: Email of a user
         in: body
         name: email
         required: true
         schema:
           $ref: '#/definitions/models.TmpRequest'
-      produces:
-      - application/json
       responses:
         "204":
           description: No Content
