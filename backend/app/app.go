@@ -51,8 +51,8 @@ func (app *App) ErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
 		code = http.StatusInternalServerError
 	}
 	w.WriteHeader(code)
-	json.NewEncoder(w).Encode(map[string]string{
-		"error": err.Error(),
+	json.NewEncoder(w).Encode(apperrors.ErrorResponse{
+		Error: err.Error(),
 	})
 }
 

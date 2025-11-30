@@ -16,6 +16,16 @@ import (
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 )
 
+// SendTmpPassword creates and sends temporary passwords
+// @Summary      Creates a temporary password for a user with a certain email, saves it to a database and sends to the user
+// @Tags         auth
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        smartphone_id path int true "Smartphone ID"
+// @Param        email body models.TmpRequest true "Email of a user"
+// @Success      204
+// @Router       /users/restore [post]
 func (app *App) SendTmpPassword(w http.ResponseWriter, r *http.Request) {
 	t := models.TmpPassword{}
 	err := json.NewDecoder(r.Body).Decode(&t)
@@ -71,7 +81,9 @@ func SendTmpPassword(tmpPassword models.TmpPassword) error {
 	password := "qUuejB1p8REw83xShQDP"
 	smtpPort := "465"
 	subject := "Smartbuy temporary password"
-	body := "Your temporary password: " + tmpPassword.Password + "\nExpires at: " + tmpPassword.ExpiresAt.String()
+	body := "Ваш одноразовый пароль для входа в систему: " + tmpPassword.Password +
+		"\nДействителен до: " + tmpPassword.ExpiresAt.String() +
+		"\nПосле входа в систему поменяйте пароль в личном кабинете"
 	// 1. Формирование сообщения
 	msg := []byte(
 		"To: " + tmpPassword.Email + "\r\n" +

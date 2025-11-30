@@ -2,10 +2,15 @@ package app
 
 import (
 	"net/http"
+
+	_ "github.com/sfu-teamproject/smartbuy/backend/docs"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func (app *App) NewRouter() http.Handler {
 	router := http.NewServeMux()
+
+	router.HandleFunc("GET /swagger/", httpSwagger.WrapHandler)
 
 	router.HandleFunc("GET /api/v1/smartphones", app.GetSmartphones)
 	router.HandleFunc("GET /api/v1/smartphones/{smartphone_id}", app.GetSmartphone)
@@ -15,6 +20,7 @@ func (app *App) NewRouter() http.Handler {
 	router.HandleFunc("POST /api/v1/login", app.Login)
 	router.HandleFunc("POST /api/v1/signup", app.Signup)
 	router.HandleFunc("PATCH /api/v1/users/{user_id}", app.Auth(app.UpdateUser))
+	router.HandleFunc("DELETE /api/v1/users/{user_id}", app.Auth(app.DeleteUser))
 	router.HandleFunc("POST /api/v1/users/restore", app.SendTmpPassword)
 
 	router.HandleFunc("GET /api/v1/smartphones/{smartphone_id}/reviews", app.GetReviews)
@@ -30,6 +36,8 @@ func (app *App) NewRouter() http.Handler {
 	router.HandleFunc("POST /api/v1/carts/{cart_id}/items", app.Auth(app.AddToCart))
 	router.HandleFunc("PATCH /api/v1/carts/{cart_id}/items/{item_id}", app.Auth(app.SetQuantity))
 	router.HandleFunc("DELETE /api/v1/carts/{cart_id}/items/{item_id}", app.Auth(app.DeleteFromCart))
+
+	router.HandleFunc("POST /api/v1/language", app.SetLanguage)
 
 	return app.RecoverPanic(app.LogRequests(router))
 }

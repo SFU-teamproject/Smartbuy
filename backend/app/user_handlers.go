@@ -23,6 +23,17 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
+// GetUser gets a single user
+// @Summary      Get User Profile
+// @Description  Get details of a specific user.
+// @Tags         users
+// @Security     BearerAuth
+// @Produce      json
+// @Param        user_id path int true "User ID"
+// @Success      200  {object}  models.User
+// @Failure      403  {object}  apperrors.ErrorResponse "Forbidden"
+// @Failure      404  {object}  apperrors.ErrorResponse "Not Found"
+// @Router       /users/{user_id} [get]
 func (app *App) GetUser(w http.ResponseWriter, r *http.Request) {
 	ID, err := app.ExtractPathValue(r, "user_id")
 	if err != nil {
@@ -58,6 +69,15 @@ func (app *App) GetUser(w http.ResponseWriter, r *http.Request) {
 	app.Encode(w, r, user)
 }
 
+// GetUsers lists all users
+// @Summary      Get All Users
+// @Description  Admin only. Lists all registered users.
+// @Tags         users
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {array}   models.User
+// @Failure      403  {object}  apperrors.ErrorResponse "Forbidden"
+// @Router       /users [get]
 func (app *App) GetUsers(w http.ResponseWriter, r *http.Request) {
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
@@ -92,6 +112,18 @@ func (app *App) GetUserByEmail(w http.ResponseWriter, r *http.Request) {
 	app.Encode(w, r, user)
 }
 
+// UpdateUser updates profile
+// @Summary      Update User
+// @Description  Update name, avatar, or password.
+// @Tags         users
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        user_id path int true "User ID"
+// @Param        input body models.UpdateRequest true "Update Info"
+// @Success      200  {object}  models.User
+// @Failure      400  {object}  apperrors.ErrorResponse "Bad Request"
+// @Router       /users/{user_id} [patch]
 func (app *App) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	userID, err := app.ExtractPathValue(r, "user_id")
 	if err != nil {
@@ -151,6 +183,16 @@ func (app *App) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	app.Encode(w, r, updatedUser)
 }
 
+// Signup creates a new user
+// @Summary      Register User
+// @Description  Creates a new user account and sends a tmp password (single use) to the user's email
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        name&email body models.SignUpRequest true "Name and Email of the user"
+// @Success      201  {object}  models.User
+// @Failure      400  {object}  apperrors.ErrorResponse "Bad Request"
+// @Router       /signup [post]
 func (app *App) Signup(w http.ResponseWriter, r *http.Request) {
 	var signup models.SignUpRequest
 	err := json.NewDecoder(r.Body).Decode(&signup)
@@ -195,6 +237,17 @@ func (app *App) Signup(w http.ResponseWriter, r *http.Request) {
 	app.Encode(w, r, newUser)
 }
 
+// Login logs in a user
+// @Summary      User Login
+// @Description  Authenticates a user and signs a JWT token
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        email&password body models.LoginRequest true "Login Credentials"
+// @Success      200  {object}  models.LoginResponse
+// @Failure      400  {object}  apperrors.ErrorResponse "Bad Request"
+// @Failure      401  {object}  apperrors.ErrorResponse "Unauthorized"
+// @Router       /login [post]
 func (app *App) Login(w http.ResponseWriter, r *http.Request) {
 	var login models.LoginRequest
 	err := json.NewDecoder(r.Body).Decode(&login)
@@ -254,6 +307,77 @@ func (app *App) Login(w http.ResponseWriter, r *http.Request) {
 	existingUser.Cart = cart
 	loginResponse := models.LoginResponse{User: existingUser, Token: jwt}
 	app.Encode(w, r, loginResponse)
+}
+
+// DeleteUser deletes a user account
+// @Summary      Delete User Account
+// @Description  Permanently remove a user account. Users can delete themselves; Admins can delete anyone.
+// @Tags         users
+// @Security     BearerAuth
+// @Produce      json
+// @Param        user_id path int true "User ID to delete"
+// @Success      200  {object}  models.User "Returns the deleted user data"
+// @Failure      401  {object}  apperrors.ErrorResponse "Unauthorized"
+// @Failure      403  {object}  apperrors.ErrorResponse "Forbidden - Not your account"
+// @Failure      404  {object}  apperrors.ErrorResponse "User not found"
+// @Router       /users/{user_id} [delete]
+func (app *App) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	targetUserID, err := app.ExtractPathValue(r, "user_id")
+	if err != nil {
+		app.ErrorJSON(w, r, err)
+		return
+	}
+	requestorID, role, err := app.GetClaims(r)
+	if err != nil {
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
+		return
+	}
+	if targetUserID != requestorID && role != models.RoleAdmin {
+		app.ErrorJSON(w, r, fmt.Errorf("%w: you can only delete your own account", apperrors.ErrForbidden))
+		return
+	}
+	deletedUser, err := app.DB.DeleteUser(targetUserID)
+	if err != nil {
+		app.ErrorJSON(w, r, fmt.Errorf("error deleting user %d: %w", targetUserID, err))
+		return
+	}
+	app.Encode(w, r, deletedUser)
+}
+
+// SetLanguage sets the user's preferred language in a cookie
+// @Summary      Set Interface Language
+// @Description  Saves the user's preferred language (key="lang") in a cookie for 30 days.
+// @Tags         settings
+// @Accept       json
+// @Produce      json
+// @Param        input body models.SetLang true "Language (e.g. ru, en)"
+// @Success      201  {object}  models.SetLang "New Language"
+// @Failure      400  {object}  apperrors.ErrorResponse "Invalid language code"
+// @Router       /language [post]
+func (app *App) SetLanguage(w http.ResponseWriter, r *http.Request) {
+	var req models.SetLang
+	err := json.NewDecoder(r.Body).Decode(&req)
+	if err != nil {
+		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding request: %w", apperrors.ErrBadRequest, err))
+		return
+	}
+	if req.Lang != "ru" && req.Lang != "en" {
+		app.ErrorJSON(w, r, fmt.Errorf("%w: unsupported language '%s'", apperrors.ErrBadRequest, req.Lang))
+		return
+	}
+	cookie := &http.Cookie{
+		Name:     "lang",
+		Value:    req.Lang,
+		Path:     "/",
+		Expires:  time.Now().Add(30 * 24 * time.Hour),
+		HttpOnly: false,
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+	}
+	http.SetCookie(w, cookie)
+	app.Encode(w, r, models.SetLang{
+		Lang: req.Lang,
+	})
 }
 
 func createContextWithClaims(userID string, role models.Role) context.Context {

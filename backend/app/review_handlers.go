@@ -9,6 +9,15 @@ import (
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 )
 
+// GetReview gets a single review
+// @Summary      Get a Review
+// @Tags         reviews
+// @Produce      json
+// @Param        smartphone_id path int true "Smartphone ID"
+// @Param        review_id path int true "Review ID"
+// @Success      200  {object}  models.Review
+// @Failure      404  {object}  apperrors.ErrorResponse "Not Found"
+// @Router       /smartphones/{smartphone_id}/reviews/{review_id} [get]
 func (app *App) GetReview(w http.ResponseWriter, r *http.Request) {
 	reviewID, err := app.ExtractPathValue(r, "review_id")
 	if err != nil {
@@ -23,6 +32,15 @@ func (app *App) GetReview(w http.ResponseWriter, r *http.Request) {
 	app.Encode(w, r, review)
 }
 
+// GetReviews gets reviews for a phone
+// @Summary      List Reviews
+// @Description  Get all reviews for a specific smartphone
+// @Tags         reviews
+// @Produce      json
+// @Param        smartphone_id path int true "Smartphone ID"
+// @Success      200  {array}   models.Review
+// @Failure      404  {object}  apperrors.ErrorResponse "Not Found"
+// @Router       /smartphones/{smartphone_id}/reviews [get]
 func (app *App) GetReviews(w http.ResponseWriter, r *http.Request) {
 	smartphoneID, err := app.ExtractPathValue(r, "smartphone_id")
 	if err != nil {
@@ -37,6 +55,17 @@ func (app *App) GetReviews(w http.ResponseWriter, r *http.Request) {
 	app.Encode(w, r, reviews)
 }
 
+// CreateReview adds a review
+// @Summary      Post a Review
+// @Tags         reviews
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        smartphone_id path int true "Smartphone ID"
+// @Param        input body models.ReviewRequest true "Review Body"
+// @Success      201  {object}  models.Review
+// @Failure      401  {object}  apperrors.ErrorResponse "Unauthorized"
+// @Router       /smartphones/{smartphone_id}/reviews [post]
 func (app *App) CreateReview(w http.ResponseWriter, r *http.Request) {
 	userID, _, err := app.GetClaims(r)
 	if err != nil {
@@ -48,12 +77,13 @@ func (app *App) CreateReview(w http.ResponseWriter, r *http.Request) {
 		app.ErrorJSON(w, r, err)
 		return
 	}
-	var review models.Review
-	err = json.NewDecoder(r.Body).Decode(&review)
+	var reviewreq models.ReviewRequest
+	err = json.NewDecoder(r.Body).Decode(&reviewreq)
 	if err != nil {
 		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding review: %w", apperrors.ErrBadRequest, err))
 		return
 	}
+	review := models.Review{Rating: reviewreq.Rating, Comment: reviewreq.Comment}
 	review.SmartphoneID = smartphoneID
 	review.UserID = userID
 	newReview, err := app.DB.CreateReview(review)
@@ -65,24 +95,36 @@ func (app *App) CreateReview(w http.ResponseWriter, r *http.Request) {
 	app.Encode(w, r, newReview)
 }
 
+// UpdateReview edits a review
+// @Summary      Edit a Review
+// @Tags         reviews
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        smartphone_id path int true "Smartphone ID"
+// @Param        review_id path int true "Review ID"
+// @Param        input body models.ReviewRequest true "Review Body"
+// @Success      200  {object}  models.Review
+// @Failure      403  {object}  apperrors.ErrorResponse "Forbidden"
+// @Router       /smartphones/{smartphone_id}/reviews/{review_id} [patch]
 func (app *App) UpdateReview(w http.ResponseWriter, r *http.Request) {
 	userID, role, err := app.GetClaims(r)
 	if err != nil {
 		app.ErrorJSON(w, r, fmt.Errorf("%w: error extracting claims: %w", apperrors.ErrUnauthorized, err))
 		return
 	}
-	var review models.Review
-	review.ID, err = app.ExtractPathValue(r, "review_id")
+	reviewID, err := app.ExtractPathValue(r, "review_id")
 	if err != nil {
 		app.ErrorJSON(w, r, err)
 		return
 	}
-	err = json.NewDecoder(r.Body).Decode(&review)
+	var reviewreq models.ReviewRequest
+	err = json.NewDecoder(r.Body).Decode(&reviewreq)
 	if err != nil {
 		app.ErrorJSON(w, r, fmt.Errorf("%w: error decoding review: %w", apperrors.ErrBadRequest, err))
 		return
 	}
-	existingReview, err := app.DB.GetReview(review.ID)
+	existingReview, err := app.DB.GetReview(reviewID)
 	if err != nil {
 		app.ErrorJSON(w, r, fmt.Errorf("error getting review: %w", err))
 		return
@@ -96,6 +138,7 @@ func (app *App) UpdateReview(w http.ResponseWriter, r *http.Request) {
 		app.ErrorJSON(w, r, err)
 		return
 	}
+	review := models.Review{Rating: reviewreq.Rating, Comment: reviewreq.Comment, ID: reviewID}
 	review.SmartphoneID = smID
 	if existingReview.SmartphoneID != review.SmartphoneID {
 		app.ErrorJSON(w, r, fmt.Errorf("%w: review %d is not for smartphone %d",
@@ -110,6 +153,17 @@ func (app *App) UpdateReview(w http.ResponseWriter, r *http.Request) {
 	app.Encode(w, r, updatedReview)
 }
 
+// @Summary      Deletes a review
+// @Description  Deletes a review of a certain smartphone
+// @Tags         reviews
+// @Security     BearerAuth
+// @Produce      json
+// @Param        smartphone_id path int true "Smartphone ID"
+// @Param        review_id path int true "Review ID"
+// @Success      200  {object}  models.Review
+// @Failure      401  {object}  apperrors.ErrorResponse "Unauthorized"
+// @Failure      403  {object}  apperrors.ErrorResponse "Forbidden"
+// @Router       /smartphones/{smartphone_id}/reviews/{review_id} [delete]
 func (app *App) DeleteReview(w http.ResponseWriter, r *http.Request) {
 	userID, role, err := app.GetClaims(r)
 	if err != nil {

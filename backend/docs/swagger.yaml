@@ -1,0 +1,801 @@
+basePath: /api/v1
+definitions:
+  apperrors.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  models.Cart:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      items:
+        items:
+          $ref: '#/definitions/models.CartItem'
+        type: array
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  models.CartItem:
+    properties:
+      cart_id:
+        type: integer
+      id:
+        type: integer
+      quantity:
+        type: integer
+      smartphone_id:
+        type: integer
+    type: object
+  models.CartItemRequest:
+    properties:
+      quantity:
+        type: integer
+      smartphone_id:
+        type: integer
+    type: object
+  models.LoginRequest:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  models.LoginResponse:
+    properties:
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.User'
+    type: object
+  models.Review:
+    properties:
+      comment:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      rating:
+        type: integer
+      smartphone_id:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: integer
+      user_name:
+        type: string
+    type: object
+  models.ReviewRequest:
+    properties:
+      comment:
+        type: string
+      rating:
+        type: integer
+    type: object
+  models.SetItemQuantity:
+    properties:
+      quantity:
+        type: integer
+    type: object
+  models.SetLang:
+    properties:
+      lang:
+        example: ru
+        type: string
+    type: object
+  models.SignUpRequest:
+    properties:
+      email:
+        type: string
+      name:
+        type: string
+    type: object
+  models.Smartphone:
+    properties:
+      description:
+        type: string
+      display_size:
+        type: number
+      id:
+        type: integer
+      image_path:
+        type: string
+      memory:
+        type: integer
+      model:
+        type: string
+      price:
+        type: integer
+      producer:
+        type: string
+      ram:
+        type: integer
+      ratings_count:
+        type: integer
+      ratings_sum:
+        type: integer
+      reviews:
+        items:
+          $ref: '#/definitions/models.Review'
+        type: array
+    type: object
+  models.TmpRequest:
+    properties:
+      email:
+        type: string
+    type: object
+  models.UpdateRequest:
+    properties:
+      avatar:
+        type: string
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+  models.User:
+    properties:
+      avatar:
+        type: string
+      cart:
+        $ref: '#/definitions/models.Cart'
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: string
+    type: object
+host: localhost:8081
+info:
+  contact: {}
+  description: API Server for Smartbuy application
+  termsOfService: http://swagger.io/terms/
+  title: Smartbuy API
+  version: "1.0"
+paths:
+  /carts:
+    get:
+      description: Gets all Carts. If user id provided in a query, then return only
+        cart belonging to that user
+      parameters:
+      - description: User ID
+        in: query
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Cart'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all Carts
+      tags:
+      - cart
+  /carts/{cart_id}:
+    get:
+      description: Gets a Cart with a certain cart_id
+      parameters:
+      - description: Cart ID
+        in: path
+        name: cart_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Cart'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get a Cart
+      tags:
+      - cart
+  /carts/{cart_id}/items:
+    get:
+      description: Gets all Cart items from a certain cart
+      parameters:
+      - description: Cart ID
+        in: path
+        name: cart_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CartItem'
+            type: array
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get all Cart items
+      tags:
+      - cart
+    post:
+      consumes:
+      - application/json
+      description: Adds a smartphone item to the user's cart
+      parameters:
+      - description: Cart ID
+        in: path
+        name: cart_id
+        required: true
+        type: integer
+      - description: Item to add
+        in: body
+        name: cart_item
+        required: true
+        schema:
+          $ref: '#/definitions/models.CartItemRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CartItem'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Add Item to Cart
+      tags:
+      - cart
+  /carts/{cart_id}/items/{item_id}:
+    delete:
+      description: Deletes an item from a cart
+      parameters:
+      - description: Item ID
+        in: path
+        name: item_id
+        required: true
+        type: integer
+      - description: Cart ID
+        in: path
+        name: cart_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CartItem'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deletes an item from a cart
+      tags:
+      - cart
+    patch:
+      consumes:
+      - application/json
+      description: Sets quantity of an item in a cart
+      parameters:
+      - description: Item ID
+        in: path
+        name: item_id
+        required: true
+        type: integer
+      - description: Cart ID
+        in: path
+        name: cart_id
+        required: true
+        type: integer
+      - description: New quantity of the item
+        in: body
+        name: quantity
+        required: true
+        schema:
+          $ref: '#/definitions/models.SetItemQuantity'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CartItem'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Sets quantity of an item in a cart
+      tags:
+      - cart
+  /language:
+    post:
+      consumes:
+      - application/json
+      description: Saves the user's preferred language (key="lang") in a cookie for
+        30 days.
+      parameters:
+      - description: Language (e.g. ru, en)
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.SetLang'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: New Language
+          schema:
+            $ref: '#/definitions/models.SetLang'
+        "400":
+          description: Invalid language code
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      summary: Set Interface Language
+      tags:
+      - settings
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a user and signs a JWT token
+      parameters:
+      - description: Login Credentials
+        in: body
+        name: email&password
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.LoginResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      summary: User Login
+      tags:
+      - auth
+  /signup:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user account and sends a tmp password (single use)
+        to the user's email
+      parameters:
+      - description: Name and Email of the user
+        in: body
+        name: name&email
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      summary: Register User
+      tags:
+      - auth
+  /smartphones:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all smartphones or filter by IDs
+      parameters:
+      - description: Comma separated IDs (e.g. 1,2,3)
+        in: query
+        name: ids
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Smartphone'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      summary: List Smartphones
+      tags:
+      - smartphones
+  /smartphones/{smartphone_id}:
+    get:
+      description: Get a specific smartphone by ID
+      parameters:
+      - description: Smartphone ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Smartphone'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      summary: Get a Smartphone
+      tags:
+      - smartphones
+  /smartphones/{smartphone_id}/reviews:
+    get:
+      description: Get all reviews for a specific smartphone
+      parameters:
+      - description: Smartphone ID
+        in: path
+        name: smartphone_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Review'
+            type: array
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      summary: List Reviews
+      tags:
+      - reviews
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Smartphone ID
+        in: path
+        name: smartphone_id
+        required: true
+        type: integer
+      - description: Review Body
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Review'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Post a Review
+      tags:
+      - reviews
+  /smartphones/{smartphone_id}/reviews/{review_id}:
+    delete:
+      description: Deletes a review of a certain smartphone
+      parameters:
+      - description: Smartphone ID
+        in: path
+        name: smartphone_id
+        required: true
+        type: integer
+      - description: Review ID
+        in: path
+        name: review_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Deletes a review
+      tags:
+      - reviews
+    get:
+      parameters:
+      - description: Smartphone ID
+        in: path
+        name: smartphone_id
+        required: true
+        type: integer
+      - description: Review ID
+        in: path
+        name: review_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      summary: Get a Review
+      tags:
+      - reviews
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Smartphone ID
+        in: path
+        name: smartphone_id
+        required: true
+        type: integer
+      - description: Review ID
+        in: path
+        name: review_id
+        required: true
+        type: integer
+      - description: Review Body
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.ReviewRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Review'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Edit a Review
+      tags:
+      - reviews
+  /users:
+    get:
+      description: Admin only. Lists all registered users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get All Users
+      tags:
+      - users
+  /users/{user_id}:
+    delete:
+      description: Permanently remove a user account. Users can delete themselves;
+        Admins can delete anyone.
+      parameters:
+      - description: User ID to delete
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Returns the deleted user data
+          schema:
+            $ref: '#/definitions/models.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "403":
+          description: Forbidden - Not your account
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Delete User Account
+      tags:
+      - users
+    get:
+      description: Get details of a specific user.
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get User Profile
+      tags:
+      - users
+    patch:
+      consumes:
+      - application/json
+      description: Update name, avatar, or password.
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: integer
+      - description: Update Info
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/apperrors.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Update User
+      tags:
+      - users
+  /users/restore:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Smartphone ID
+        in: path
+        name: smartphone_id
+        required: true
+        type: integer
+      - description: Email of a user
+        in: body
+        name: email
+        required: true
+        schema:
+          $ref: '#/definitions/models.TmpRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      security:
+      - BearerAuth: []
+      summary: Creates a temporary password for a user with a certain email, saves
+        it to a database and sends to the user
+      tags:
+      - auth
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

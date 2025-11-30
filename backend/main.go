@@ -11,6 +11,17 @@ import (
 	"github.com/sfu-teamproject/smartbuy/backend/storage/postgres"
 )
 
+// @title           Smartbuy API
+// @version         1.0
+// @description     API Server for Smartbuy application
+// @termsOfService  http://swagger.io/terms/
+// @openapi 3.0.0
+// @host            localhost:8081
+// @BasePath        /api/v1
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	godotenv.Load()
 	logger, err := logger.NewConsoleLogger()

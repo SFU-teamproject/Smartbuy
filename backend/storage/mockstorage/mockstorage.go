@@ -49,6 +49,11 @@ func (m *MockStorage) UpdateUser(userID int, updates map[string]any) (models.Use
 	return args.Get(0).(models.User), args.Error(1)
 }
 
+func (m *MockStorage) DeleteUser(userID int) (models.User, error) {
+	args := m.Called(userID)
+	return args.Get(0).(models.User), args.Error(1)
+}
+
 func (m *MockStorage) CreateTmpPassword(token models.TmpPassword) (models.TmpPassword, error) {
 	args := m.Called(token)
 	return args.Get(0).(models.TmpPassword), args.Error(1)

@@ -39,6 +39,10 @@ type UpdateRequest struct {
 	Password string `json:"password"`
 }
 
+type SetLang struct {
+	Lang string `json:"lang" example:"ru"`
+}
+
 type Role string
 
 const (

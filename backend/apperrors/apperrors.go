@@ -13,3 +13,7 @@ var (
 	ErrNotFound           = errors.New("not found")
 	ErrAlreadyExists      = errors.New("already exists")
 )
+
+type ErrorResponse struct {
+	Error string `json:"error"`
+}

@@ -14,6 +14,7 @@ type Storage interface {
 	GetUserByEmail(email string) (models.User, error)
 	CreateUser(user models.User) (models.User, error)
 	UpdateUser(userID int, updates map[string]any) (models.User, error)
+	DeleteUser(id int) (models.User, error)
 
 	GetTmpPassword(email string) (models.TmpPassword, error)
 	CreateTmpPassword(TmpPassword models.TmpPassword) (models.TmpPassword, error)
