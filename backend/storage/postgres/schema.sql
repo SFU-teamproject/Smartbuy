@@ -21,12 +21,24 @@ DROP TABLE IF EXISTS users cascade;
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    password TEXT NOT NULL,
+    CHECK(LENGTH(name) >= 5),
+    email TEXT NOT NULL UNIQUE,
+    avatar TEXT,
+    password TEXT,
+    CHECK(LENGTH(password) >= 5),
     role VARCHAR(10) DEFAULT 'user',
     CHECK (role IN ('admin', 'user')),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-CREATE UNIQUE INDEX ON users (LOWER(name));
+CREATE UNIQUE INDEX ON users(LOWER(email));
+
+DROP TABLE IF EXISTS tmp_passwords;
+CREATE TABLE tmp_passwords (
+    email TEXT NOT NULL REFERENCES users(email) ON DELETE CASCADE,
+    password TEXT NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL
+);
+CREATE INDEX ON tmp_passwords(LOWER(email));
 
 DROP TABLE IF EXISTS reviews cascade;
 CREATE TABLE reviews (

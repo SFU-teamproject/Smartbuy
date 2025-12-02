@@ -11,8 +11,14 @@ type Storage interface {
 
 	GetUser(ID int) (models.User, error)
 	GetUsers() ([]models.User, error)
-	GetUserByName(name string) (models.User, error)
+	GetUserByEmail(email string) (models.User, error)
 	CreateUser(user models.User) (models.User, error)
+	UpdateUser(userID int, updates map[string]any) (models.User, error)
+	DeleteUser(id int) (models.User, error)
+
+	GetTmpPassword(email string) (models.TmpPassword, error)
+	CreateTmpPassword(TmpPassword models.TmpPassword) (models.TmpPassword, error)
+	DeleteTmpPassword(email string) (models.TmpPassword, error)
 
 	GetReview(ID int) (models.Review, error)
 	GetReviews(smartphoneID int) ([]models.Review, error)

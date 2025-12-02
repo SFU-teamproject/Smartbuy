@@ -1,4 +1,5 @@
-FROM scratch
+FROM alpine:latest
+RUN apk add --no-cache ca-certificates
 COPY smartbuy smartbuy
 EXPOSE 8081
 CMD ["/smartbuy"]

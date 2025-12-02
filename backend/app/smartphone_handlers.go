@@ -6,9 +6,18 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/sfu-teamproject/smartbuy/backend/apperrors"
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 )
 
+// @Summary      Get a Smartphone
+// @Description  Get a specific smartphone by ID
+// @Tags         smartphones
+// @Produce      json
+// @Param        id  path int true "Smartphone ID"
+// @Success      200  {object}   models.Smartphone
+// @Failure      400  {object}  apperrors.ErrorResponse "Bad Request"
+// @Router       /smartphones/{smartphone_id} [get]
 func (app *App) GetSmartphone(w http.ResponseWriter, r *http.Request) {
 	smartphoneID, err := app.ExtractPathValue(r, "smartphone_id")
 	if err != nil {
@@ -29,6 +38,16 @@ func (app *App) GetSmartphone(w http.ResponseWriter, r *http.Request) {
 	app.Encode(w, r, sm)
 }
 
+// GetSmartphones lists smartphones
+// @Summary      List Smartphones
+// @Description  Get a list of all smartphones or filter by IDs
+// @Tags         smartphones
+// @Accept       json
+// @Produce      json
+// @Param        ids  query string false "Comma separated IDs (e.g. 1,2,3)"
+// @Success      200  {array}   models.Smartphone
+// @Failure      400  {object}  apperrors.ErrorResponse "Bad Request"
+// @Router       /smartphones [get]
 func (app *App) GetSmartphones(w http.ResponseWriter, r *http.Request) {
 	var sm []models.Smartphone
 	var err error
@@ -41,7 +60,7 @@ func (app *App) GetSmartphones(w http.ResponseWriter, r *http.Request) {
 		for i, IDStr := range IDsStr {
 			ID, err := strconv.Atoi(IDStr)
 			if err != nil {
-				app.ErrorJSON(w, r, fmt.Errorf("%w: invalid id(%s): %w", errBadRequest, IDStr, err))
+				app.ErrorJSON(w, r, fmt.Errorf("%w: invalid id(%s): %w", apperrors.ErrBadRequest, IDStr, err))
 			}
 			IDs[i] = ID
 		}

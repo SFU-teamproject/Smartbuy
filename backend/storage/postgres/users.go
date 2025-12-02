@@ -2,6 +2,8 @@ package postgres
 
 import (
 	"database/sql"
+	"fmt"
+	"strings"
 
 	"github.com/sfu-teamproject/smartbuy/backend/models"
 )
@@ -21,8 +23,8 @@ func (db *PostgresDB) GetUser(ID int) (User, error) {
 	return db.extractUser(row)
 }
 
-func (db *PostgresDB) GetUserByName(name string) (User, error) {
-	row := db.QueryRow("SELECT * FROM users WHERE name = $1", name)
+func (db *PostgresDB) GetUserByEmail(email string) (User, error) {
+	row := db.QueryRow("SELECT * FROM users WHERE email = $1", email)
 	return db.extractUser(row)
 }
 
@@ -31,30 +33,38 @@ func (db *PostgresDB) DeleteUser(ID int) (User, error) {
 	return db.extractUser(row)
 }
 
-func (db *PostgresDB) UpdateUser(user User) (User, error) {
-	query := `
-	UPDATE users
-	SET name = $1, password = $2, role = $3
-	WHERE id = $4
-	RETURNING *
-	`
-	row := db.QueryRow(query, user.Name, user.Password, user.Role, user.ID)
+func (db *PostgresDB) UpdateUser(userID int, updates map[string]any) (User, error) {
+	var query strings.Builder
+	query.WriteString("UPDATE users SET ")
+	args := make([]any, 0, len(updates))
+	argId := 1
+	for field, value := range updates {
+		query.WriteString(fmt.Sprintf("%s = $%d", field, argId))
+		args = append(args, value)
+		if argId < len(updates) {
+			query.WriteString(", ")
+		}
+		argId++
+	}
+	query.WriteString(fmt.Sprintf(" WHERE id = $%d RETURNING *", argId))
+	args = append(args, userID)
+	row := db.QueryRow(query.String(), args...)
 	return db.extractUser(row)
 }
 
 func (db *PostgresDB) CreateUser(user User) (User, error) {
 	query := `
-	INSERT INTO users (name, password)
-	VALUES ($1, $2)
+	INSERT INTO users (name, email, avatar, password)
+	VALUES ($1, $2, $3, $4)
 	RETURNING *
 	`
-	row := db.QueryRow(query, user.Name, user.Password)
+	row := db.QueryRow(query, user.Name, user.Email, user.Avatar, user.Password)
 	return db.extractUser(row)
 }
 
 func (db *PostgresDB) extractUser(row *sql.Row) (User, error) {
 	user := User{}
-	err := row.Scan(&user.ID, &user.Name, &user.Password, &user.Role, &user.CreatedAt)
+	err := row.Scan(&user.ID, &user.Name, &user.Email, &user.Avatar, &user.Password, &user.Role, &user.CreatedAt)
 	return user, db.wrapError(err)
 }
 
@@ -63,11 +73,10 @@ func (db *PostgresDB) extractUsers(rows *sql.Rows) ([]User, error) {
 	users := []User{}
 	for rows.Next() {
 		user := User{}
-		err := rows.Scan(&user.ID, &user.Name, &user.Password, &user.Role, &user.CreatedAt)
+		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Avatar, &user.Password, &user.Role, &user.CreatedAt)
 		if err != nil {
 			return nil, db.wrapError(err)
 		}
-		user.Password = ""
 		users = append(users, user)
 	}
 	return users, nil

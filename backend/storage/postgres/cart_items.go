@@ -9,8 +9,8 @@ import (
 type CartItem = models.CartItem
 
 func (db *PostgresDB) AddToCart(cartItem models.CartItem) (CartItem, error) {
-	row := db.QueryRow("INSERT INTO cart_items (cart_id, smartphone_id) values ($1, $2) RETURNING *",
-		cartItem.CartID, cartItem.SmartphoneID)
+	row := db.QueryRow("INSERT INTO cart_items (cart_id, smartphone_id, quantity) values ($1, $2, $3) RETURNING *",
+		cartItem.CartID, cartItem.SmartphoneID, cartItem.Quantity)
 	return db.extractCartItem(row)
 }
 

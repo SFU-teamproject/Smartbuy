@@ -34,14 +34,39 @@ func (m *MockStorage) GetUsers() ([]models.User, error) {
 	return args.Get(0).([]models.User), args.Error(1)
 }
 
-func (m *MockStorage) GetUserByName(name string) (models.User, error) {
-	args := m.Called(name)
+func (m *MockStorage) GetUserByEmail(email string) (models.User, error) {
+	args := m.Called(email)
 	return args.Get(0).(models.User), args.Error(1)
 }
 
 func (m *MockStorage) CreateUser(user models.User) (models.User, error) {
 	args := m.Called(user)
 	return args.Get(0).(models.User), args.Error(1)
+}
+
+func (m *MockStorage) UpdateUser(userID int, updates map[string]any) (models.User, error) {
+	args := m.Called(updates)
+	return args.Get(0).(models.User), args.Error(1)
+}
+
+func (m *MockStorage) DeleteUser(userID int) (models.User, error) {
+	args := m.Called(userID)
+	return args.Get(0).(models.User), args.Error(1)
+}
+
+func (m *MockStorage) CreateTmpPassword(token models.TmpPassword) (models.TmpPassword, error) {
+	args := m.Called(token)
+	return args.Get(0).(models.TmpPassword), args.Error(1)
+}
+
+func (m *MockStorage) GetTmpPassword(email string) (models.TmpPassword, error) {
+	args := m.Called(email)
+	return args.Get(0).(models.TmpPassword), args.Error(1)
+}
+
+func (m *MockStorage) DeleteTmpPassword(email string) (models.TmpPassword, error) {
+	args := m.Called(email)
+	return args.Get(0).(models.TmpPassword), args.Error(1)
 }
 
 func (m *MockStorage) GetReview(ID int) (models.Review, error) {
