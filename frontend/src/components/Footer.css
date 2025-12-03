@@ -182,9 +182,14 @@
 }
 
 .social-links a:hover {
-  background-color: var(--primary-main);
+  color:  #bdc3c7;
   transform: translateY(-2px);
 }
+/* Цвета для конкретных соцсетей при наведении */
+.social-link:nth-child(1):hover { background: #1877f2; border-color: #1877f2; } /* VK */
+.social-link:nth-child(2):hover { background: #0088cc; border-color: #0088cc;} /* Telegram */
+/*.social-link:nth-child(3):hover { background: #ff0000; border-color: #ff0000; }  YouTube */
+
 
 .footer-bottom {
   border-top: 1px solid #2c3e50;

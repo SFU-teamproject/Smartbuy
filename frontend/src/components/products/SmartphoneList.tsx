@@ -6,6 +6,7 @@ import './SmartphoneList.css';
 import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { addCartItem } from '../../api/client';
+import { useLanguage } from '../../context/LanguageContext';
 import Pagination from './Pagination/Pagination';
 
 export function SmartphoneList() {
@@ -16,6 +17,7 @@ export function SmartphoneList() {
   const [filteredIds, setFilteredIds] = useState<number[] | null>(null);
   const { user, token, refreshCart } = useAuth(); // Хук вызывается в начале компонента
   const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useLanguage();
 
   // Получаем параметры фильтрации из URL
   const producerFilter = searchParams.get('producer');
@@ -160,7 +162,7 @@ export function SmartphoneList() {
 
   return (
     <div className="smartphone-list">
-      <h2>Наши смартфоны</h2>
+      <h2>{t('products.ourSmartphones')}</h2>
        {/* <div className="filter-controls">
         <button onClick={handleShowPopular} className="filter-button">
           Show Popular (IDs: 1, 3, 4)
@@ -235,7 +237,7 @@ export function SmartphoneList() {
       </div>
 
       <div className="products-info">
-        <p>Найдено товаров: {filteredSmartphones.length}</p>
+        <p>{t('products.found')}: {filteredSmartphones.length}</p>
       </div>
          {/* Основной контент */}
        <div className="products-grid">
@@ -251,21 +253,21 @@ export function SmartphoneList() {
                 <h3>{phone.producer} {phone.model}</h3>
               </Link>
               <div className="product-specs">
-                <p>Память: {phone.memory}GB</p>
-                <p>RAM: {phone.ram}GB</p>
+                <p>{t('products.memory')}: {phone.memory}GB </p>
+                <p>{t('products.ram')}: {phone.ram}GB </p>
                </div>
               <p className="price">{phone.price.toLocaleString('ru-RU')} ₽</p>
               <div className="rating">
-                Рейтинг: {phone.ratings_count > 0 
+                {t('products.rating')}: {phone.ratings_count > 0 
                   ? (phone.ratings_sum / phone.ratings_count).toFixed(1) 
-                  : 'Нет оценок'}
+                  : t('products.noRatings')}
               </div>
               <button 
                 onClick={() => handleAddToCart(phone.id)} 
                 className="add-to-cart"
                 disabled={inBucket(phone.id)}
               >
-                {inBucket(phone.id) ? "Уже в корзине" : "Добавить в корзину"}
+                {inBucket(phone.id) ? t('products.inCart') : t('products.addToCart')}
               </button>
             </div>
           </div>
@@ -284,7 +286,7 @@ export function SmartphoneList() {
       
       {filteredSmartphones.length === 0 && !loading && (
         <div className="no-products">
-          <h3>Товары не найдены</h3>
+          <h3>{t('products.notFound')}</h3>
           <button onClick={handleResetFilter} className="filter-button">
             Показать все товары
           </button>

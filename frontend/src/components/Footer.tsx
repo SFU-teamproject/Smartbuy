@@ -6,6 +6,7 @@ import {
   Facebook as FacebookIcon,
   LinkedIn as LinkedInIcon
 } from '@mui/icons-material';
+import { useLanguage } from '../context/LanguageContext';
 import './Footer.css';
 
 // SVG иконка VK
@@ -16,17 +17,18 @@ const VkIcon = () => (
 
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { t } = useLanguage();
 
   return (
     <footer className="app-footer">
       <div className="footer-content">
         <div className="footer-section">
           <h3>Smartbuy</h3>
-          <p>Лучший выбор смартфонов по доступным ценам</p>
+          <p>{t('footer.description')}</p>
         </div>
         
         <div className="footer-section">
-          <h4>Контакты</h4>
+          <h4>{t('footer.contacts')}</h4>
           <ul>
            <li><span className="material-icons">Email:</span> info@smartbuy.ru</li>
             <li><span className="material-icons">Телефон:</span> +7 (495) 123-45-67</li>
@@ -35,17 +37,17 @@ export const Footer = () => {
         </div>
         
         <div className="footer-section">
-          <h4>Информация</h4>
+          <h4>{t('footer.info')}</h4>
           <ul>
-            <li><a href="/about">О компании</a></li>
-            <li><a href="/products">Товары</a></li>
-            <li><a href="/delivery">Доставка и оплата</a></li>
-            <li><a href="/guarantee">Гарантия</a></li>
+            <li><a href="/about">{t('footer.about')}</a></li>
+            <li><a href="/products">{t('nav.products')}</a></li>
+            <li><a href="/delivery">{t('footer.delivery')}</a></li>
+            <li><a href="/guarantee">{t('footer.guarantee')}</a></li>
           </ul>
         </div>
         
         <div className="footer-section">
-          <h4>Мы в соцсетях</h4>
+          <h4>{t('footer.social')}</h4>
            <div className="social-links">
             <a href="#" aria-label="VK" className="social-link">
               <VkIcon />
@@ -61,7 +63,7 @@ export const Footer = () => {
       </div>
       
       <div className="footer-bottom">
-        <p>&copy; {currentYear} Smartbuy. Все права защищены.</p>
+        <p>&copy; {currentYear} Smartbuy. {t('footer.rights')}</p>
       </div>
     </footer>
   );

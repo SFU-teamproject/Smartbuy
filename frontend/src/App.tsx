@@ -1,13 +1,14 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { LanguageProvider } from './context/LanguageContext';
 import { ProtectedRoute } from './components/auth/ProtectedRoute';
 import { SmartphoneList } from './components/products/SmartphoneList';
 import { SmartphoneDetail } from './components/products/SmartphoneDetail';
 import { UsersList } from './components/admin/UsersList';
 import { CartView } from './components/cart/CartView';
-import { LoginForm } from './components/auth/LoginForm';
-import { SignupForm } from './components/auth/SignupForm';
+import LoginForm from './components/auth/LoginForm';
+import SignupForm from './components/auth/SignupForm';
 import { Layout } from './components/Layout';
 import { NotFoundPage } from './components/NotFoundPage';
 import { ProtectedCartRoute } from './components/cart/ProtectedCartRoute';
@@ -16,6 +17,7 @@ import { BankView } from './components/cart/BankView';
 import { SuccessView } from './components/cart/SuccessView';
 function App() {
   return (
+      <LanguageProvider>
     <ThemeProvider>
     <AuthProvider>
       <Router>
@@ -76,6 +78,7 @@ function App() {
       </Router>
     </AuthProvider>
     </ThemeProvider>
+    </LanguageProvider>
   );
 }
 

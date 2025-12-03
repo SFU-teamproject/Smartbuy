@@ -47,11 +47,16 @@ export interface AuthResponse {
 }
 
 export interface LoginData {
-  name: string;
+  // Для login бэкенд ожидает email и password
+  email: string;      // Добавляем email
   password: string;
+  name?: string;      // Делаем опциональным
 }
 
-export interface SignupData extends LoginData {}
+export interface SignupData {
+  // Для signup бэкенд ожидает только email
+  email: string;
+}
 
 export interface Order {
   id: number;

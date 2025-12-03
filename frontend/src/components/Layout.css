@@ -193,4 +193,35 @@
     max-width: 100%;
     padding: 1rem;
   }
+
+  .language-toggle {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  height: 40px;
+}
+
+.language-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Адаптивность для кнопок */
+@media (max-width: 768px) {
+  .language-toggle,
+  .theme-toggle {
+    width: 36px;
+    height: 36px;
+    font-size: 0.7rem;
+  }
+}
 }
