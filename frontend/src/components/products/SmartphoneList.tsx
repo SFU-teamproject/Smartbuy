@@ -163,75 +163,13 @@ export function SmartphoneList() {
   return (
     <div className="smartphone-list">
       <h2>{t('products.ourSmartphones')}</h2>
-       {/* <div className="filter-controls">
-        <button onClick={handleShowPopular} className="filter-button">
-          Show Popular (IDs: 1, 3, 4)
-        </button>
-        {filteredIds && (
-          <button onClick={handleResetFilter} className="filter-button">
-            Show All
-          </button>
-        )}
-      </div>
-
-      Информация о активных фильтрах
-      {activeFilters.length > 0 && (
-        <div className="active-filters">
-          <h3></h3>
-          <div className="filters-list">
-            {activeFilters.map((filter, index) => (
-              <span key={index} className="filter-tag">
-                {filter}
-              </span>
-            ))}
-            <button onClick={handleResetFilter} className="clear-filters">
-             X
-            </button>
-          </div>
-        </div>
-      )}  */}
-      {/* {/* Информация о активных фильтрах расширенная*/}{/*
-      {activeFilters.length > 0 && (
-        <div className="active-filters">
-          <div className="filters-header">
-            <span className="filters-title">Активные фильтры:</span>
-            <button onClick={handleResetFilter} className="clear-all-filters">
-              Очистить все
-            </button>
-          </div>
-          <div className="filters-list">
-            {activeFilters.map((filter, index) => (
-              <div key={index} className="filter-tag">
-                <span className="filter-text">{filter}</span>
-                <button 
-                  onClick={() => {
-                    // Удаляем конкретный фильтр
-                    if (filter.includes('Производитель')) {
-                      searchParams.delete('producer');
-                    } else if (filter.includes('Цена')) {
-                      searchParams.delete('price');
-                    } else if (filter.includes('Популярные')) {
-                      setFilteredIds(null);
-                    }
-                    setSearchParams(searchParams);
-                  }}
-                  className="remove-filter"
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}*/}
-
       <div className="filter-controls">
         <button onClick={handleShowPopular} className="filter-button">
-          Показать популярные
+          {t('products.showPopular')}
         </button>
         {filteredIds && (
           <button onClick={handleResetFilter} className="filter-button">
-            Показать все
+           {t('products.showAll')}
           </button>
         )}
       </div>
@@ -288,7 +226,7 @@ export function SmartphoneList() {
         <div className="no-products">
           <h3>{t('products.notFound')}</h3>
           <button onClick={handleResetFilter} className="filter-button">
-            Показать все товары
+            {t('products.resetFilters')}
           </button>
         </div>
       )}

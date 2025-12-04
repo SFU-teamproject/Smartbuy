@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Review, ReviewForAdd, ReviewForUpdate, Smartphone } from '../../types';
 import { useAuth } from '../../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 import './SmartphoneDetail.css';
 
 export function SmartphoneDetail() {
@@ -18,6 +19,7 @@ export function SmartphoneDetail() {
     const [myReview, setMyReview] = useState<Review | null>(null);
     const [showReviewFlag, setShowReviewFlag] = useState<Boolean>(false);
     const [selectedRating, setSelectedRating] = useState(5);
+    const { t } = useLanguage();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -175,19 +177,19 @@ export function SmartphoneDetail() {
 
                     <div className="specs-grid">
                         <div className="spec-item">
-                            <span className="spec-label">Память</span>
+                            <span className="spec-label">{t('products.memory')}</span>
                             <span className="spec-value">{phone.memory} GB</span>
                         </div>
                         <div className="spec-item">
-                            <span className="spec-label">Оперативная память</span>
+                            <span className="spec-label">{t('products.ram')}</span>
                             <span className="spec-value">{phone.ram} GB</span>
                         </div>
                         <div className="spec-item">
-                            <span className="spec-label">Диагональ экрана</span>
+                            <span className="spec-label">{t('products.screen')}</span>
                             <span className="spec-value">{phone.display_size}"</span>
                         </div>
                         <div className="spec-item">
-                            <span className="spec-label">Производитель</span>
+                            <span className="spec-label">{t('products.producer')}</span>
                             <span className="spec-value">{phone.producer}</span>
                         </div>
                     </div>
@@ -201,12 +203,12 @@ export function SmartphoneDetail() {
                             {inBucket(phone.id) ? (
                                 <>
                                     <span className="cart-icon">✓</span>
-                                    Уже в корзине
+                                   {t('products.inCart')}
                                 </>
                             ) : (
                                 <>
                                     <span className="cart-icon">🛒</span>
-                                    Добавить в корзину
+                                    {t('products.addToCart')}
                                 </>
                             )}
                         </button>
@@ -217,7 +219,7 @@ export function SmartphoneDetail() {
 
             {phone.description && (
                 <div className="description-section">
-                    <h2 className="description-title">Описание</h2>
+                    <h2 className="description-title">{t('products.description')}</h2>
                     <div className="description-content">
                         <p>{phone.description}</p>
                     </div>
@@ -225,11 +227,11 @@ export function SmartphoneDetail() {
             )}
             {!showReviewFlag ? (
                 <div className='create_review'>
-                    <h2>Оставьте свой отзыв:</h2>
-                    <label htmlFor='review_comment'>Комментарий: </label>
+                    <h2> {t('products.addRewiew')}:</h2>
+                    <label htmlFor='review_comment'>{t('products.comment')}: </label>
                     <input type="text" id="review_comment" value={review?.comment} onChange={handleChangeComment} />
                     <div className='review_stars'>
-                        <span>Оценка: </span>
+                        <span>{t('products.rating')}: </span>
                         <label htmlFor='review_star_1'>1</label>
                         <input type='radio' name='star' id='review_star_1' value={1} onChange={handleChangeStars} checked={selectedRating === 1} ></input>
                         <label htmlFor='review_star_2'>2</label>
@@ -242,14 +244,14 @@ export function SmartphoneDetail() {
                         <input type='radio' name='star' id='review_star_5' value={5} onChange={handleChangeStars} checked={selectedRating === 5} ></input>
                     </div>
                     {!myReview ?
-                        (<button type='submit' onClick={handleAddReview} className='review_button'>Создать</button>) :
-                        (<button type='submit' onClick={handleUpdateReview} className='review_button'>Обновить</button>)
+                        (<button type='submit' onClick={handleAddReview} className='review_button'>{t('products.create')}</button>) :
+                        (<button type='submit' onClick={handleUpdateReview} className='review_button'>{t('products.update')}</button>)
                     }
                     <br />
                 </div>
             ) : (
                 <div className='Update_review'>
-                    <h2>Ваш отзыв:</h2>
+                    <h2>{t('products.youReview')}:</h2>
                     <div className='reviews_container'>
                         {myReview && (
                             <div className='review'>
@@ -267,7 +269,7 @@ export function SmartphoneDetail() {
                     </div>
                 </div>
             )}
-            {reviews.length > 0 ? <h2>Отзывы:</h2> : <h2>Отзывов нет</h2>}
+            {reviews.length > 0 ? <h2>{t('products.reviews')}:</h2> : <h2>Отзывов нет</h2>}
             {reviews.map((review) => (
                 <div className='reviews_container'>
                     <div className='review'>
@@ -284,32 +286,3 @@ export function SmartphoneDetail() {
         </div>
     );
 }
-{/*  
-        <div className="detail-info">
-           <div className="product-header">
-            <h2>{phone.producer} {phone.model}</h2>
-          <div className="specs">
-            <p><strong>Память:</strong> {phone.memory}GB</p>
-            <p><strong>RAM:</strong> {phone.ram}GB</p>
-            <p><strong>Экран:</strong> {phone.display_size}"</p>
-            <p className="price"><strong>Цена:</strong> {phone.price.toString()}</p> {/*${phone.price.toLocaleString()}*/} /*
-          </div>
-          {phone.ratings_count > 0 && (
-            <div className="rating">
-              Рейтинг: {(phone.ratings_sum / phone.ratings_count).toFixed(1)}/5
-              ({phone.ratings_count} reviews)
-            </div>
-          )}
-          <button className="add-to-cart" onClick={() => handleAddToCart(phone.id)} disabled={inBucket(phone.id)}>{inBucket(phone.id) ? "Уже в корзине" : "Добавить в корзину"}</button>
-        </div>
-      </div>
-      {phone.description && (
-        <div className="description">
-          <h3>Описание</h3>
-          <p>{phone.description}</p>
-        </div>
-      )}
-    </div>
-  );
-}
-}*/

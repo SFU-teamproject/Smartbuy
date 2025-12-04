@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../../context/LanguageContext';
 import './CatalogSidebar.css';
 
 export const CatalogSidebar = () => {
@@ -11,10 +12,11 @@ export const CatalogSidebar = () => {
     { name: 'POCO', slug: 'poco' },
     { name: 'Honor', slug: 'honor' }
   ];
+  const { t } = useLanguage();
 
   return (
     <aside className="catalog-sidebar">
-      <h3 className="catalog-title">Каталог товаров</h3>
+      <h3 className="catalog-title">{t('filters.title')}</h3>
       <nav className="producers-nav">
         <ul className="producers-list">
           {producers.map((producer) => (
@@ -33,19 +35,19 @@ export const CatalogSidebar = () => {
 
       {/* Дополнительные фильтры */}
       <div className="additional-filters">
-        <h4>Фильтры по цене</h4>
+        <h4>{t('filters.price')}</h4>
         <div className="filter-group">
           <Link to="/?price=budget" className="filter-link">
-            До 20 000 ₽
+            {t('filters.price.budget')}
           </Link>
           <Link to="/?price=mid" className="filter-link">
-            20 000 - 40 000 ₽
+           {t('filters.price.mid')}
           </Link>
           <Link to="/?price=premium" className="filter-link">
-            От 40 000 ₽
+            {t('filters.price.premium')}
           </Link>
           <Link to="/" className="filter-link">
-            Все товары
+            {t('filters.price.all')}
           </Link>
         </div>
       </div>

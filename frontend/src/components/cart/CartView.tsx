@@ -5,6 +5,7 @@ import { getCartItems, updateCartItem, deleteCartItem, getSmartphoneById } from 
 import { CartItem, Smartphone } from '../../types';
 import './Cart.css'; 
 import { motion, AnimatePresence } from 'framer-motion'; // Для анимаций
+import { useLanguage } from '../../context/LanguageContext';
 import { Link } from 'react-router-dom';
 
 export const CartView = () => {
@@ -12,6 +13,7 @@ export const CartView = () => {
   const [items, setItems] = useState<(CartItem & { smartphone?: Smartphone })[]>([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
+  const { t } = useLanguage();
   
   // Загрузка данных корзины и товаров
   useEffect(() => {
@@ -83,7 +85,7 @@ export const CartView = () => {
 
   return (
     <div className="cart">
-      <h2>Моя корзина</h2>
+      <h2>{t('cart.myCart')}</h2>
       
       <AnimatePresence>
         {items.length === 0 ? (
@@ -94,7 +96,7 @@ export const CartView = () => {
             className="empty-cart"
           >
              <div className="empty-cart-icon">🛒</div>
-            <p className="empty-message">Ваша корзина пуста</p>
+            <p className="empty-message">{t('cart.empty')}</p>
             <Link to="/" className="continue-shopping">
               Продолжить покупки
             </Link>
@@ -170,7 +172,7 @@ export const CartView = () => {
                       onClick={() => handleRemoveItem(item.id)}
                       className="remove-btn"
                     >
-                      Удалить
+                      {t('cart.remove')}
                     </button>
                   </div>
                 </motion.li>
@@ -184,7 +186,7 @@ export const CartView = () => {
               transition={{ delay: 0.1 }}
             >
               <h3>Итого: {total.toLocaleString()} ₽</h3>
-              <Link to="/payment" className="nav-link"><button className="checkout-btn">Оформить заказ</button></Link>
+              <Link to="/payment" className="nav-link"><button className="checkout-btn">{t('cart.checkout')}</button></Link>
             </motion.div>
           </>
         )}
